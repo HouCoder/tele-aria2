@@ -1,51 +1,24 @@
-import ConfigParser, xmlrpclib
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-# https://stackoverflow.com/a/2819788/4480674
-class _FakeSecHead(object):
-    def __init__(self, fp):
-        self.fp = fp
-        self.sechead = '[asection]\n'
-
-    def readline(self):
-        if self.sechead:
-            try:
-                return self.sechead
-            finally:
-                self.sechead = None
-        else:
-            return self.fp.readline()
-
-
-def _merge_two_dicts(*dict_args):
-    """
-    Given any number of dicts, shallow copy and merge into a new dict,
-    precedence goes to key value pairs in latter dicts.
-    https://stackoverflow.com/a/26853961/4480674
-    """
-    result = {}
-    for dictionary in dict_args:
-        result.update(dictionary)
-    return result
+import xmlrpclib, toolkits
 
 class Aria2:
-    def __init__(self, config_path):
-        self.aria2_config = self.parse_config_file(config_path)
-        self.server = self.establish_server_connection()
+    def __init__(self, user_config):
+        self.aria2_config = self.__prepare_config(user_config)
+        self.server = self.__establish_server_connection()
         self.token = 'token:' + self.aria2_config['rpc-secret']
 
-    def parse_config_file(self, path):
-        cp = ConfigParser.SafeConfigParser()
-        cp.readfp(_FakeSecHead(open(path)))
-
+    def __prepare_config(self, user_config):
         default_config = {
             'rpc-listen-port': 6800,
         }
 
-        # Use dict to convert result to dixt - https://stackoverflow.com/a/1773820/4480674
-        return _merge_two_dicts(default_config, dict(cp.items('asection')))
+        return toolkits.merge_two_dicts(default_config, user_config)
 
-    def establish_server_connection(self):
-        return xmlrpclib.ServerProxy('http://127.0.0.1:' + str(self.aria2_config['rpc-listen-port']) + '/rpc')
+    def __establish_server_connection(self):
+        port = str(self.aria2_config['rpc-listen-port'])
+        return xmlrpclib.ServerProxy('http://192.168.24.156:' + port + '/rpc')
 
     def add_uri(self, uri):
         response_gid = None
