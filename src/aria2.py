@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import xmlrpclib, toolkits
+import xmlrpclib
+import toolkits
+
 
 class Aria2:
     def __init__(self, user_config):

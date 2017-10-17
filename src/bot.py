@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging, telegram, toolkits
+import logging
+import telegram
+import toolkits
 from aria2 import Aria2
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, DispatcherHandlerStop
+
 
 class Bot:
     def __init__(self, user_config):
@@ -55,13 +58,13 @@ class Bot:
         chat_id = update.message.chat_id
 
         bot.send_message(chat_id=chat_id,
-                        text=self.aria2_actions.add_uri(args)
-                        )
+                         text=self.aria2_actions.add_uri(args)
+                         )
 
     def __command_tell_active(self, bot, update):
         chat_id = update.message.chat_id
         data = self.aria2_actions.tell_active()
-        response_text = [];
+        response_text = []
 
         for download in data:
             task_name = None
@@ -70,7 +73,7 @@ class Bot:
             # Use total_length to determine whether the download is initialized.
             if total_length > 0:
                 is_bittorrent = 'bittorrent' in download
-                individual = [];
+                individual = []
 
                 if is_bittorrent:
                     if 'info' in download['bittorrent']:
@@ -111,9 +114,9 @@ class Bot:
                 ]))
 
         bot.send_message(chat_id=chat_id,
-                        text='\n\n'.join(response_text),
-                        parse_mode=telegram.ParseMode.HTML
-                        )
+                         text='\n\n'.join(response_text),
+                         parse_mode=telegram.ParseMode.HTML
+                         )
 
     def start(self):
         self.__add_handlers()
