@@ -7,12 +7,12 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Dispa
 
 class Bot:
     def __init__(self, user_config):
-        self.__init_logging()
-        self.aria2_actions = Aria2(user_config)
-        self.updater = Updater(token=user_config['tele-aria2.telegran-token'], request_kwargs={
-            'proxy_url': 'socks5://127.0.0.1:6153/'
-        })
         self.user_config = user_config
+        self.__init_logging()
+        self.aria2_actions = Aria2(self.user_config)
+        self.updater = Updater(token=self.user_config['tele-aria2.telegran-token'], request_kwargs={
+            'proxy_url': self.user_config['tele-aria2.proxy']
+        })
 
     def __init_logging(self):
         """
@@ -22,10 +22,10 @@ class Bot:
                             level=logging.INFO)
 
     def __user_authentication(self, bot, update):
-        authorized_user = self.user_config['tele-aria2.telegran-id'].split(',')
+        authorized_users = self.user_config['tele-aria2.telegran-id'].split(',')
 
         # https://github.com/python-telegram-bot/python-telegram-bot/issues/849
-        if str(update.message.from_user.id) not in authorized_user:
+        if str(update.message.from_user.id) not in authorized_users:
             update.message.reply_text('Unable to response to unauthorized user!')
             raise DispatcherHandlerStop
 
@@ -67,6 +67,7 @@ class Bot:
             task_name = None
             total_length = int(download['totalLength'])
 
+            # Use total_length to determine whether the download is initialized.
             if total_length > 0:
                 is_bittorrent = 'bittorrent' in download
                 individual = [];
@@ -103,6 +104,7 @@ class Bot:
 
                 response_text.append('\n'.join(individual))
             else:
+                # Only show name and gid if the download is not initialized.
                 response_text.append('\n'.join([
                     '<b>Name:</b> Unknown',
                     '<b>GID:</b> ' + download['gid']
