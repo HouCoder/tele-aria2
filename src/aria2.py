@@ -28,9 +28,9 @@ class Aria2:
         try:
             response_gid = self.server.aria2.addUri(self.token, uri)
         except xmlrpclib.Fault as err:
-            return 'Add task failed! code: ' + str(err.faultCode) + ', message: ' + err.faultString
+			return str(err)
 
-        return 'Task added, gid: ' + response_gid
+        return 'Download added, GID#' + response_gid
 
     def add_torrent(self):
         pass
@@ -39,7 +39,12 @@ class Aria2:
         pass
 
     def remove(self, gid):
-        return self.server.aria2.remove(self.token, gid)
+		try:
+			self.server.aria2.remove(self.token, gid)
+		except xmlrpclib.Fault as err:
+			return str(err)
+
+		return 'Download removed, GID#' + gid
 
     def force_remove(self, gid):
         return self.server.aria2.forceRemove(self.token, gid)

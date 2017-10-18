@@ -37,6 +37,7 @@ class Bot:
         self.updater.dispatcher.add_handler(CommandHandler('help', self.__command_help))
         self.updater.dispatcher.add_handler(CommandHandler('addUri', self.__command_add_uri, pass_args=True))
         self.updater.dispatcher.add_handler(CommandHandler('tellActive', self.__command_tell_active))
+        self.updater.dispatcher.add_handler(CommandHandler('remove', self.__command_remove, pass_args=True))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
 
     def __command_start(self, bot, update):
@@ -52,7 +53,15 @@ class Bot:
             '',
             '/addUri - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
             '/tellActive - Return a list of active downloads',
+            '/remove - Remove the download denoted by gid',
         ]))
+
+    def __command_remove(self, bot, update, args):
+        chat_id = update.message.chat_id
+
+        bot.send_message(chat_id=chat_id,
+                         text=self.aria2_actions.remove(args[0])
+                         )
 
     def __command_add_uri(self, bot, update, args):
         chat_id = update.message.chat_id
