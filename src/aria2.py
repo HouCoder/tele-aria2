@@ -28,7 +28,7 @@ class Aria2:
         try:
             response_gid = self.server.aria2.addUri(self.token, uri)
         except xmlrpclib.Fault as err:
-			return str(err)
+            return str(err)
 
         return 'Download added, GID#' + response_gid
 
@@ -39,33 +39,68 @@ class Aria2:
         pass
 
     def remove(self, gid):
-		try:
-			self.server.aria2.remove(self.token, gid)
-		except xmlrpclib.Fault as err:
-			return str(err)
+        try:
+            self.server.aria2.remove(self.token, gid)
+        except xmlrpclib.Fault as err:
+            return str(err)
 
-		return 'Download removed, GID#' + gid
+        return 'Download removed, GID#' + gid
 
     def force_remove(self, gid):
-        return self.server.aria2.forceRemove(self.token, gid)
+        try:
+            self.server.aria2.forceRemove(self.token, gid)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Download force removed, GID#' + gid
 
     def pause(self, gid):
-        return self.server.aria2.pause(self.token, gid)
+        try:
+            self.server.aria2.pause(self.token, gid)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Download paused, GID#' + gid
 
     def pause_all(self):
-        return self.server.aria2.pauseAll(self.token)
+        try:
+            self.server.aria2.pauseAll(self.token)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Downloads paused'
 
     def force_pause(self, gid):
-        return self.server.aria2.forcePause(self.token, gid)
+        try:
+            self.server.aria2.forcePause(self.token, gid)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Download force paused, GID#' + gid
 
     def force_pause_all(self):
-        return self.server.aria2.forcePauseAll(self.token)
+        try:
+            self.server.aria2.forcePauseAll(self.token)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Downloads force paused'
 
     def unpause(self, gid):
-        return self.server.aria2.unpause(self.token, gid)
+        try:
+            self.server.aria2.unpause(self.token, gid)
+        except xmlrpclib.Fault as err:
+            return str(err)
 
-    def unpause_all(self, gid):
-        return self.server.aria2.unpauseAll(self.token)
+        return 'Download unpaused, GID#' + gid
+
+    def unpause_all(self):
+        try:
+            self.server.aria2.unpauseAll(self.token)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Downloads unpaused'
 
     def tell_active(self):
         return self.server.aria2.tellActive(self.token)
