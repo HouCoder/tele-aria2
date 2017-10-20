@@ -7,7 +7,6 @@ import toolkits
 from aria2 import Aria2
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, DispatcherHandlerStop
 
-
 class Bot:
     def __init__(self, user_config):
         self.user_config = user_config
@@ -33,19 +32,22 @@ class Bot:
             raise DispatcherHandlerStop
 
     def __add_handlers(self):
-        self.updater.dispatcher.add_handler(CommandHandler('start', self.__command_start))
-        self.updater.dispatcher.add_handler(CommandHandler('help', self.__command_help))
-        self.updater.dispatcher.add_handler(CommandHandler('addUri', self.__command_add_uri, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('tellActive', self.__command_tell_active))
-        self.updater.dispatcher.add_handler(CommandHandler('remove', self.__command_remove, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('forceRemove', self.__command_force_remove, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('pause', self.__command_pause, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('forcePause', self.__command_force_pause, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('pauseAll', self.__command_pause_all))
-        self.updater.dispatcher.add_handler(CommandHandler('forcePauseAll', self.__command_force_pause_all))
-        self.updater.dispatcher.add_handler(CommandHandler('unpause', self.__command_unpause, pass_args=True))
-        self.updater.dispatcher.add_handler(CommandHandler('unpauseAll', self.__command_unpause_all))
-        self.updater.dispatcher.add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
+        add_handler = self.updater.dispatcher.add_handler
+
+        add_handler(CommandHandler('start', self.__command_start))
+        add_handler(CommandHandler('help', self.__command_help))
+        add_handler(CommandHandler('addUri', self.__command_add_uri, pass_args=True))
+        add_handler(CommandHandler('tellActive', self.__command_tell_active))
+        add_handler(CommandHandler('tellWaiting', self.__command_tell_waiting))
+        add_handler(CommandHandler('remove', self.__command_remove, pass_args=True))
+        add_handler(CommandHandler('forceRemove', self.__command_force_remove, pass_args=True))
+        add_handler(CommandHandler('pause', self.__command_pause, pass_args=True))
+        add_handler(CommandHandler('forcePause', self.__command_force_pause, pass_args=True))
+        add_handler(CommandHandler('pauseAll', self.__command_pause_all))
+        add_handler(CommandHandler('forcePauseAll', self.__command_force_pause_all))
+        add_handler(CommandHandler('unpause', self.__command_unpause, pass_args=True))
+        add_handler(CommandHandler('unpauseAll', self.__command_unpause_all))
+        add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
 
     def __command_start(self, bot, update):
         # print update.message.from_user
@@ -59,7 +61,6 @@ class Bot:
             'You can control your aria2 server by sending these commands:',
             '',
             '/addUri - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
-            '/tellActive - Return a list of active downloads',
             '/remove - Remove download denoted by gid',
             '/forceRemove - Remove download denoted by gid without performing any actions which take time',
             '/pause',
@@ -68,6 +69,8 @@ class Bot:
             '/forcePauseAll',
             '/unpause',
             '/unpauseAll',
+            '/tellActive - Return a list of active downloads',
+            '/tellWaiting - This method returns a list of waiting downloads, including paused ones',
         ]))
 
     def __command_unpause(self, bot, update, args):
@@ -132,6 +135,9 @@ class Bot:
         bot.send_message(chat_id=chat_id,
                          text=self.aria2_actions.add_uri(args)
                          )
+
+    def __command_tell_waiting(self, bot, update):
+        pass
 
     def __command_tell_active(self, bot, update):
         chat_id = update.message.chat_id
