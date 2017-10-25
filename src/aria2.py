@@ -106,10 +106,10 @@ class Aria2:
         return self.server.aria2.tellActive(self.token)
 
     def tell_waiting(self):
-        return self.server.aria2.tellStopped(self.token)
+        return self.server.aria2.tellWaiting(self.token, 0, 999)
 
     def tell_stopped(self):
-        return self.server.aria2.tellStopped(self.token)
+        return self.server.aria2.tellStopped(self.token, 0, 999)
 
     def tell_status(self, gid):
         return self.server.aria2.tellStatus(self.token, gid)

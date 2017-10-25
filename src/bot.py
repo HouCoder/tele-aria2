@@ -37,8 +37,11 @@ class Bot:
         add_handler(CommandHandler('start', self.__command_start))
         add_handler(CommandHandler('help', self.__command_help))
         add_handler(CommandHandler('addUri', self.__command_add_uri, pass_args=True))
-        add_handler(CommandHandler('tellActive', self.__command_tell_active))
-        add_handler(CommandHandler('tellWaiting', self.__command_tell_waiting))
+
+        add_handler(CommandHandler('tellActive', self.__tell_something('tell_active')))
+        add_handler(CommandHandler('tellWaiting', self.__tell_something('tell_waiting')))
+        add_handler(CommandHandler('tellStopped', self.__tell_something('tell_stopped')))
+
         add_handler(CommandHandler('remove', self.__command_remove, pass_args=True))
         add_handler(CommandHandler('forceRemove', self.__command_force_remove, pass_args=True))
         add_handler(CommandHandler('pause', self.__command_pause, pass_args=True))
@@ -136,75 +139,95 @@ class Bot:
                          text=self.aria2_actions.add_uri(args)
                          )
 
-    def __command_tell_waiting(self, bot, update):
-        pass
+    def __tell_something(self, what):
 
-    def __command_tell_active(self, bot, update):
-        chat_id = update.message.chat_id
-        data = self.aria2_actions.tell_active()
+        def echo_result(bot, update):
+            chat_id = update.message.chat_id
+
+            # https://stackoverflow.com/a/3071/4480674
+            aria2_response = getattr(self.aria2_actions, what)()
+            response_text = None
+
+            # If aria2_response is not empty
+            if aria2_response:
+                response_text = self.__response_parser(aria2_response)
+
+            else:
+                response_text = 'No available data'
+
+            bot.send_message(chat_id=chat_id,
+                            text=response_text,
+                            parse_mode=telegram.ParseMode.HTML
+                            )
+
+        return echo_result
+
+    def __response_parser(self, data):
+        response_list = []
         response_text = None
 
-        # If data is not empty
-        if data:
-            response_list = []
+        for download in data:
+            total_length = int(download['totalLength'])
+            status = download['status']
 
-            for download in data:
-                total_length = int(download['totalLength'])
+            # Use total_length to determine whether the download is initialized.
+            if total_length > 0:
+                is_bittorrent = 'bittorrent' in download
+                individual = []
+                task_name = None
 
-                # Use total_length to determine whether the download is initialized.
-                if total_length > 0:
-                    is_bittorrent = 'bittorrent' in download
-                    individual = []
-                    task_name = None
-
-                    if is_bittorrent:
-                        if 'info' in download['bittorrent']:
-                            task_name = download['bittorrent']['info']['name']
-                        else:
-                            task_name = 'Unknown'
+                if is_bittorrent:
+                    if 'info' in download['bittorrent']:
+                        task_name = download['bittorrent']['info']['name']
                     else:
-                        task_name = download['files'][0]['path'].split('/')[-1]
+                        task_name = 'Unknown'
+                else:
+                    task_name = download['files'][0]['path'].split('/')[-1]
 
-                    individual.append('<b>Name:</b> ' + task_name)
+                individual.append('<b>Name:</b> ' + task_name)
 
-                    individual.append('<b>GID:</b> ' + download['gid'])
+                individual.append('<b>GID:</b> ' + download['gid'])
 
-                    completed_length = int(download['completedLength'])
+                completed_length = int(download['completedLength'])
+
+                if status in ['active', 'paused']:
                     progress = toolkits.calculate_progress(total_length, completed_length)
                     individual.append('<b>Progress:</b> ' + progress)
 
+                need_total_length = need_upload_length = status in ['active', 'paused', 'complete']
+
+                if need_total_length:
                     individual.append('<b>Total Length:</b> ' + toolkits.readable_size(total_length))
 
-                    if total_length != completed_length:
-                        download_speed = int(download['downloadSpeed'])
-                        individual.append('<b>Download Speed:</b> ' + toolkits.readable_size(download_speed) + '/s')
+                if status is 'active' and total_length != completed_length:
+                    download_speed = int(download['downloadSpeed'])
+                    individual.append('<b>Download Speed:</b> ' + toolkits.readable_size(download_speed) + '/s')
 
-                        if download_speed > 0:
-                            eta = toolkits.humanize_time((total_length - completed_length) / download_speed)
-                            individual.append('<b>ETA:</b> ' + eta)
+                    if download_speed > 0:
+                        eta = toolkits.humanize_time((total_length - completed_length) / download_speed)
+                        individual.append('<b>ETA:</b> ' + eta)
 
-                    upload_length = int(download['uploadLength'])
-                    upload_speed = int(download['uploadSpeed'])
+                upload_length = int(download['uploadLength'])
+
+                if upload_length and need_upload_length:
                     individual.append('<b>Upload Length:</b> ' + toolkits.readable_size(upload_length))
+
+                upload_speed = int(download['uploadSpeed'])
+
+                if upload_speed and status is 'active':
                     individual.append('<b>Upload Speed:</b> ' + toolkits.readable_size(upload_speed) + '/s')
 
-                    response_list.append('\n'.join(individual))
-                else:
-                    # Only show name and gid if the download is not initialized.
-                    response_list.append('\n'.join([
-                        '<b>Name:</b> Unknown',
-                        '<b>GID:</b> ' + download['gid']
-                    ]))
+                response_list.append('\n'.join(individual))
+            else:
+                # Only show name and gid if the download is not initialized.
+                response_list.append('\n'.join([
+                    '<b>Name:</b> Unknown',
+                    '<b>GID:</b> ' + download['gid']
+                ]))
 
-                response_text = '\n\n'.join(response_list)
+            response_text = '\n\n'.join(response_list)
 
-        else:
-            response_text = 'No active download'
-
-        bot.send_message(chat_id=chat_id,
-                         text=response_text,
-                         parse_mode=telegram.ParseMode.HTML
-                         )
+        return response_text
 
     def start(self):
         self.__add_handlers()
