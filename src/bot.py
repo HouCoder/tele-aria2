@@ -42,18 +42,21 @@ class Bot:
         add_handler(CommandHandler('tellWaiting', self.__tell_something('tell_waiting')))
         add_handler(CommandHandler('tellStopped', self.__tell_something('tell_stopped')))
 
-        add_handler(CommandHandler('remove', self.__command_remove, pass_args=True))
-        add_handler(CommandHandler('forceRemove', self.__command_force_remove, pass_args=True))
-        add_handler(CommandHandler('pause', self.__command_pause, pass_args=True))
-        add_handler(CommandHandler('forcePause', self.__command_force_pause, pass_args=True))
-        add_handler(CommandHandler('pauseAll', self.__command_pause_all))
-        add_handler(CommandHandler('forcePauseAll', self.__command_force_pause_all))
-        add_handler(CommandHandler('unpause', self.__command_unpause, pass_args=True))
-        add_handler(CommandHandler('unpauseAll', self.__command_unpause_all))
+        add_handler(CommandHandler('remove', self.__do_something('remove'), pass_args=True))
+        add_handler(CommandHandler('forceRemove', self.__do_something('force_remove'), pass_args=True))
+
+        add_handler(CommandHandler('pause', self.__do_something('pause'), pass_args=True))
+        add_handler(CommandHandler('forcePause', self.__do_something('force_pause'), pass_args=True))
+
+        add_handler(CommandHandler('pauseAll', self.__do_something('pause_all', False)))
+        add_handler(CommandHandler('forcePauseAll', self.__do_something('force_pause_all', False)))
+
+        add_handler(CommandHandler('unpause', self.__do_something('unpause'), pass_args=True))
+        add_handler(CommandHandler('unpauseAll', self.__do_something('unpause_all', False)))
+
         add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
 
     def __command_start(self, bot, update):
-        # print update.message.from_user
         update.message.reply_text('\n'.join([
             'Welcome to tele-aria2 bot!',
             'Send /help to get help',
@@ -63,89 +66,66 @@ class Bot:
         update.message.reply_text('\n'.join([
             'You can control your aria2 server by sending these commands:',
             '',
-            '/addUri - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
-            '/remove - Remove download denoted by gid',
-            '/forceRemove - Remove download denoted by gid without performing any actions which take time',
-            '/pause',
-            '/forcePause',
-            '/pauseAll',
-            '/forcePauseAll',
-            '/unpause',
-            '/unpauseAll',
+            '/addUri [uri] - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
+            '/remove [gid] - Remove download',
+            '/forceRemove [gid] - Force remove download',
+            '/pause [gid] - Pause download',
+            '/forcePause [gid] - Force pause download',
+            '/pauseAll - Pause all downloads',
+            '/forcePauseAll - Force pause all downloads',
+            '/unpause [gid] - Unpause download',
+            '/unpauseAll - Unpause all downloads',
             '/tellActive - Return a list of active downloads',
-            '/tellWaiting - This method returns a list of waiting downloads, including paused ones',
+            '/tellWaiting - Return a list of waiting downloads',
+            '/tellStopped - Return a list of stopped downloads',
         ]))
 
-    def __command_unpause(self, bot, update, args):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.unpause(args[0])
-                         )
-
-    def __command_unpause_all(self, bot, update):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.unpause_all()
-                         )
-
-    def __command_force_pause_all(self, bot, update):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.force_pause_all()
-                         )
-
-    def __command_force_pause(self, bot, update, args):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.force_pause(args[0])
-                         )
-
-    def __command_pause_all(self, bot, update):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.pause_all()
-                         )
-
-    def __command_pause(self, bot, update, args):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.pause(args[0])
-                         )
-
-    def __command_force_remove(self, bot, update, args):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.force_remove(args[0])
-                         )
-
-    def __command_remove(self, bot, update, args):
-        chat_id = update.message.chat_id
-
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.remove(args[0])
-                         )
-
     def __command_add_uri(self, bot, update, args):
-        chat_id = update.message.chat_id
+        response = None
+        if args:
+            response = self.aria2_actions.add_uri(args)
+        else:
+            response = 'Please provide a link to download.'
 
-        bot.send_message(chat_id=chat_id,
-                         text=self.aria2_actions.add_uri(args)
-                         )
+        chat_id = update.message.chat_id
+        bot.send_message(chat_id=chat_id, text=response)
+
+    def __do_something(self, task, require_gid=True):
+        def run_action(bot, update, args=None):
+            response = None
+
+            if require_gid and not args:
+                response = 'Please provide a gid.'
+            else:
+                # https://stackoverflow.com/a/3071/4480674
+                action = getattr(self.aria2_actions, task)
+
+                if args:
+                    response = action(args[0])
+                else:
+                    response = action()
+
+            chat_id = update.message.chat_id
+            bot.send_message(chat_id=chat_id,
+                            text=response
+                            )
+
+        return run_action
 
     def __tell_something(self, what):
 
-        def echo_result(bot, update):
+        def echo_result(bot, update, args=None):
             chat_id = update.message.chat_id
+            aria2_response = None
 
             # https://stackoverflow.com/a/3071/4480674
-            aria2_response = getattr(self.aria2_actions, what)()
+            action = getattr(self.aria2_actions, what)
+
+            if args:
+                aria2_response = action(args)
+            else:
+                aria2_response = action()
+
             response_text = None
 
             # If aria2_response is not empty
