@@ -38,21 +38,16 @@ class Bot:
 
         add_handler(CommandHandler('start', self.__command_start))
         add_handler(CommandHandler('help', self.__command_help))
-        add_handler(CommandHandler('addUri', self.__command_add_uri, pass_args=True))
+
+        add_handler(CommandHandler('add', self.__command_add_uri, pass_args=True))
 
         add_handler(CommandHandler('tellActive', self.__tell_something('tell_active')))
         add_handler(CommandHandler('tellWaiting', self.__tell_something('tell_waiting')))
         add_handler(CommandHandler('tellStopped', self.__tell_something('tell_stopped')))
 
-        add_handler(CommandHandler('remove', self.__do_something('remove'), pass_args=True))
-        add_handler(CommandHandler('forceRemove', self.__do_something('force_remove'), pass_args=True))
-
-        add_handler(CommandHandler('pause', self.__do_something('pause'), pass_args=True))
-        add_handler(CommandHandler('forcePause', self.__do_something('force_pause'), pass_args=True))
-
-        add_handler(CommandHandler('pauseAll', self.__do_something('pause_all', False)))
-        add_handler(CommandHandler('forcePauseAll', self.__do_something('force_pause_all', False)))
-
+        add_handler(CommandHandler('remove', self.__do_something('force_remove'), pass_args=True))
+        add_handler(CommandHandler('pause', self.__do_something('force_pause'), pass_args=True))
+        add_handler(CommandHandler('pauseAll', self.__do_something('force_pause_all', False)))
         add_handler(CommandHandler('unpause', self.__do_something('unpause'), pass_args=True))
         add_handler(CommandHandler('unpauseAll', self.__do_something('unpause_all', False)))
 
@@ -68,13 +63,10 @@ class Bot:
         update.message.reply_text('\n'.join([
             'You can control your aria2 server by sending these commands:',
             '',
-            '/addUri [uri] - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
+            '/add [uri] - Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI',
             '/remove [gid] - Remove download',
-            '/forceRemove [gid] - Force remove download',
             '/pause [gid] - Pause download',
-            '/forcePause [gid] - Force pause download',
             '/pauseAll - Pause all downloads',
-            '/forcePauseAll - Force pause all downloads',
             '/unpause [gid] - Unpause download',
             '/unpauseAll - Unpause all downloads',
             '/tellActive - Return a list of active downloads',

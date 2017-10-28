@@ -42,37 +42,13 @@ class Aria2:
     def add_metalink(self):
         pass
 
-    def remove(self, gid):
-        try:
-            self.server.aria2.remove(self.token, gid)
-        except xmlrpclib.Fault as err:
-            return str(err)
-
-        return 'Download removed, GID#' + gid
-
     def force_remove(self, gid):
         try:
             self.server.aria2.forceRemove(self.token, gid)
         except xmlrpclib.Fault as err:
             return str(err)
 
-        return 'Download force removed, GID#' + gid
-
-    def pause(self, gid):
-        try:
-            self.server.aria2.pause(self.token, gid)
-        except xmlrpclib.Fault as err:
-            return str(err)
-
-        return 'Download paused, GID#' + gid
-
-    def pause_all(self):
-        try:
-            self.server.aria2.pauseAll(self.token)
-        except xmlrpclib.Fault as err:
-            return str(err)
-
-        return 'Downloads paused'
+        return 'Download removed, GID#' + gid
 
     def force_pause(self, gid):
         try:
@@ -80,7 +56,7 @@ class Aria2:
         except xmlrpclib.Fault as err:
             return str(err)
 
-        return 'Download force paused, GID#' + gid
+        return 'Download paused, GID#' + gid
 
     def force_pause_all(self):
         try:
@@ -88,7 +64,7 @@ class Aria2:
         except xmlrpclib.Fault as err:
             return str(err)
 
-        return 'Downloads force paused'
+        return 'All downloads paused'
 
     def unpause(self, gid):
         try:
@@ -104,7 +80,7 @@ class Aria2:
         except xmlrpclib.Fault as err:
             return str(err)
 
-        return 'Downloads unpaused'
+        return 'All downloads unpaused'
 
     def tell_active(self):
         return self.server.aria2.tellActive(self.token)

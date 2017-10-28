@@ -15,7 +15,7 @@ I have made you an aria2 bot you can't refuse
 
 ## Supported Actions
 
-### /addUri [uri]
+### /add [uri]
 
 Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI.
 
@@ -23,25 +23,13 @@ Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI.
 
 Remove download.
 
-### /forceRemove [gid]
-
-Force remove download.
-
 ### /pause [gid]
 
 Pause download.
 
-### /forcePause [gid]
-
-Force pause download.
-
 ### /pauseAll
 
 Pause all downloads.
-
-### /forcePauseAll
-
-Force pause all downloads.
 
 ### /unpause [gid]
 
