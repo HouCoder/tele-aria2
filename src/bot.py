@@ -109,8 +109,8 @@ class Bot:
 
             chat_id = update.message.chat_id
             bot.send_message(chat_id=chat_id,
-                            text=response
-                            )
+                             text=response
+                             )
 
         return run_action
 
@@ -138,9 +138,9 @@ class Bot:
                 response_text = 'No available data'
 
             bot.send_message(chat_id=chat_id,
-                            text=response_text,
-                            parse_mode=telegram.ParseMode.HTML
-                            )
+                             text=response_text,
+                             parse_mode=telegram.ParseMode.HTML
+                             )
 
         return echo_result
 
