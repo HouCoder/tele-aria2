@@ -6,6 +6,8 @@ import telegram
 import toolkits
 from aria2 import Aria2
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, DispatcherHandlerStop
+from telegram.error import TelegramError
+
 
 class Bot:
     def __init__(self, user_config):
@@ -179,7 +181,7 @@ class Bot:
                 if need_total_length:
                     individual.append('<b>Total Length:</b> ' + toolkits.readable_size(total_length))
 
-                if status is 'active' and total_length != completed_length:
+                if status == 'active' and total_length != completed_length:
                     download_speed = int(download['downloadSpeed'])
                     individual.append('<b>Download Speed:</b> ' + toolkits.readable_size(download_speed) + '/s')
 
@@ -209,7 +211,17 @@ class Bot:
 
         return response_text
 
+    def __error_callback(self, bot, update, error):
+        """
+        https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling
+        """
+        try:
+            raise error
+        except TelegramError as err:
+            print err
+
     def start(self):
         self.__add_handlers()
+        self.updater.dispatcher.add_error_handler(self.__error_callback)
         self.updater.start_polling()
         self.updater.idle()
