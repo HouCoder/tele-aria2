@@ -14,13 +14,16 @@ class Aria2:
     def __prepare_config(self, user_config):
         default_config = {
             'rpc-listen-port': 6800,
+            'tele-aria2.host': 'http://127.0.0.1',
         }
 
         return toolkits.merge_two_dicts(default_config, user_config)
 
     def __establish_server_connection(self):
+        host = self.aria2_config['tele-aria2.host']
         port = str(self.aria2_config['rpc-listen-port'])
-        return xmlrpclib.ServerProxy('http://192.168.24.156:' + port + '/rpc')
+
+        return xmlrpclib.ServerProxy(host + ':' + port + '/rpc')
 
     def add_uri(self, uri):
         response_gid = None
