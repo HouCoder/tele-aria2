@@ -15,6 +15,7 @@ class Aria2:
         default_config = {
             'rpc-listen-port': 6800,
             'tele-aria2.host': 'http://127.0.0.1',
+            'rpc-secret': '',
         }
 
         return toolkits.merge_two_dicts(default_config, user_config)

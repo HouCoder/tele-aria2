@@ -18,11 +18,18 @@ def initial_args():
 
 
 def config_validator(config):
-    pass
+    if 'tele-aria2.telegran-token' not in config:
+        print('tele-aria2.telegran-token is required!')
+        exit(1)
+
+    if 'tele-aria2.telegran-id' not in config:
+        print('tele-aria2.telegran-id is required!')
+        exit(1)
 
 
 def main():
     aria2_config = toolkits.config_reader(initial_args().config)
+    config_validator(aria2_config)
     telegram_bot = Bot(aria2_config)
     telegram_bot.start()
 

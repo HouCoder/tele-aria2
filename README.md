@@ -10,13 +10,59 @@ I have made you an aria2 bot you can't refuse
 1. Add `tele-aria2.telegran-id=__YOUR_UNIQUE_ID__` to aria2 config file(want multiple users? just use `,` to separate them).
 1. (Optional) For mainland China users, recommend to use `tele-aria2.proxy` for proxy support, e.g `tele-aria2.proxy=socks5://127.0.0.1:6154/`.
 1. `$ git clone https://github.com/HouCoder/tele-aria2.git`.
+1. `$ pip install python-telegram-bot PySocks`.
+1. `$ python main.py -c __aria2_path__`.
 
 ## Supported Actions
 
-### addUri
+### /addUri [uri]
 
-This method adds a new download.
+Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI.
 
-### tellActive
+### /remove [gid]
 
-This method returns a list of active downloads.
+Remove download.
+
+### /forceRemove [gid]
+
+Force remove download.
+
+### /pause [gid]
+
+Pause download.
+
+### /forcePause [gid]
+
+Force pause download.
+
+### /pauseAll
+
+Pause all downloads.
+
+### /forcePauseAll
+
+Force pause all downloads.
+
+### /unpause [gid]
+
+Unpause download.
+
+### /unpauseAll
+
+Unpause all downloads.
+
+### /tellActive
+
+Return a list of active downloads.
+
+### /tellWaiting
+
+Return a list of the latest 10 waiting downloads.
+
+### /tellStopped
+
+Return a list of the latest 10 stopped downloads.
+
+## Discussion & feedback
+
+If you have any question, feel free to discuss at our Telegram channel - [tele-aria2](https://t.me/joinchat/BX8nShFgXeZKNOEjXKukNQ).

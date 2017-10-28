@@ -78,8 +78,8 @@ class Bot:
             '/unpause [gid] - Unpause download',
             '/unpauseAll - Unpause all downloads',
             '/tellActive - Return a list of active downloads',
-            '/tellWaiting - Return a list of waiting downloads',
-            '/tellStopped - Return a list of stopped downloads',
+            '/tellWaiting - Return a list of the latest 10 waiting downloads',
+            '/tellStopped - Return a list of the latest 10 stopped downloads',
         ]))
 
     def __command_add_uri(self, bot, update, args):
