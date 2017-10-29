@@ -15,39 +15,41 @@ I have made you an aria2 bot you can't refuse
 
 ## Supported Actions
 
-### /add [uri]
+**Want add torrent task? just simply send the torrent to your bot.**
+
+#### /add [uri]
 
 Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI.
 
-### /remove [gid]
+#### /remove [gid]
 
 Remove download.
 
-### /pause [gid]
+#### /pause [gid]
 
 Pause download.
 
-### /pauseAll
+#### /pauseAll
 
 Pause all downloads.
 
-### /unpause [gid]
+#### /unpause [gid]
 
 Unpause download.
 
-### /unpauseAll
+#### /unpauseAll
 
 Unpause all downloads.
 
-### /tellActive
+#### /tellActive
 
 Return a list of active downloads.
 
-### /tellWaiting
+#### /tellWaiting
 
 Return a list of the latest 10 waiting downloads.
 
-### /tellStopped
+#### /tellStopped
 
 Return a list of the latest 10 stopped downloads.
 

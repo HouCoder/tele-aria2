@@ -36,11 +36,16 @@ class Aria2:
 
         return 'Download added, GID#' + response_gid
 
-    def add_torrent(self):
-        pass
+    def add_torrent(self, torrent_path):
+        torrent = xmlrpclib.Binary(open(torrent_path, mode='rb').read())
+        response_gid = None
 
-    def add_metalink(self):
-        pass
+        try:
+            response_gid = self.server.aria2.addTorrent(self.token, torrent)
+        except xmlrpclib.Fault as err:
+            return str(err)
+
+        return 'Torrent add, GID#' + response_gid
 
     def force_remove(self, gid):
         try:

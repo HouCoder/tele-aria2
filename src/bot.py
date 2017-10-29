@@ -4,6 +4,7 @@
 import logging
 import telegram
 import toolkits
+import os.path
 from aria2 import Aria2
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, DispatcherHandlerStop
 from telegram.error import TelegramError
@@ -24,6 +25,15 @@ class Bot:
         """
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                             level=logging.INFO)
+
+    def __error_callback(self, bot, update, error):
+        """
+        https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling
+        """
+        try:
+            raise error
+        except TelegramError as err:
+            print err
 
     def __user_authentication(self, bot, update):
         authorized_users = self.user_config['tele-aria2.telegran-id'].split(',')
@@ -52,6 +62,10 @@ class Bot:
         add_handler(CommandHandler('unpauseAll', self.__do_something('unpause_all', False)))
 
         add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
+        add_handler(MessageHandler(Filters.document, self.__file_handler))
+
+        # Add error handler.
+        self.updater.dispatcher.add_error_handler(self.__error_callback)
 
     def __command_start(self, bot, update):
         update.message.reply_text('\n'.join([
@@ -72,6 +86,8 @@ class Bot:
             '/tellActive - Return a list of active downloads',
             '/tellWaiting - Return a list of the latest 10 waiting downloads',
             '/tellStopped - Return a list of the latest 10 stopped downloads',
+            '',
+            'Want add torrent task? just simply send the torrent to me!'
         ]))
 
     def __command_add_uri(self, bot, update, args):
@@ -203,17 +219,33 @@ class Bot:
 
         return response_text
 
-    def __error_callback(self, bot, update, error):
-        """
-        https://github.com/python-telegram-bot/python-telegram-bot/wiki/Exception-Handling
-        """
-        try:
-            raise error
-        except TelegramError as err:
-            print err
+    def __add_torrent(self, bot, update, path):
+        chat_id = update.message.chat_id
+
+        bot.send_message(chat_id=chat_id,
+                         text=self.aria2_actions.add_torrent(path),
+                         )
+
+    def __file_handler(self, bot, update):
+        # Create folder
+        app_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        target_folder = os.path.join(app_path, '.received_files')
+        if not os.path.exists(target_folder):
+            os.makedirs(target_folder)
+
+        document = update.message.document
+        logging.info('File received: ' + document.file_name)
+        torrent = bot.get_file(document.file_id)
+        file_path = os.path.join(target_folder, document.file_name)
+
+        # Download file
+        torrent.download(file_path)
+
+        logging.info('File saved to: ' + file_path)
+
+        self.__add_torrent(bot, update, file_path)
 
     def start(self):
         self.__add_handlers()
-        self.updater.dispatcher.add_error_handler(self.__error_callback)
         self.updater.start_polling()
         self.updater.idle()
