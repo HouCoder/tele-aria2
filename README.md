@@ -1,6 +1,8 @@
 # tele-aria2
 
-I have made you an aria2 bot you can't refuse
+A Telegram bot for controlling your aria2 server.
+
+![screenshot-overview](./screenshots/screenshot-1.png)
 
 ## Setup
 
@@ -15,7 +17,7 @@ I have made you an aria2 bot you can't refuse
 
 ## Supported Actions
 
-**Want add torrent task? just simply send the torrent to your bot.**
+**Wanna add torrent task? just simply send the torrent file to your bot.**
 
 #### /add [uri]
 
