@@ -13,7 +13,7 @@ A Telegram bot for controlling your aria2 server.
 1. (Optional) For mainland China users, recommend to use `tele-aria2.proxy` for proxy support, e.g `tele-aria2.proxy=socks5://127.0.0.1:6154/`.
 1. `$ git clone https://github.com/HouCoder/tele-aria2.git`.
 1. `$ pip install python-telegram-bot PySocks`.
-1. `$ python main.py -c __aria2_path__`.
+1. `$ python main.py -c __aria2_config_path__`.
 
 ## Supported Actions
 
