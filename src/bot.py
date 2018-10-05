@@ -176,8 +176,7 @@ class Bot:
 
                 individual.append('<b>Name:</b> ' + task_name)
 
-                individual.append('<b>GID:</b> ' + download['gid'])
-
+                individual.append('<b>GID:</b> <code>' + download['gid'] + '</code>')
                 completed_length = int(download['completedLength'])
 
                 if status in ['active', 'paused']:
@@ -212,7 +211,7 @@ class Bot:
                 # Only show name and gid if the download is not initialized.
                 response_list.append('\n'.join([
                     '<b>Name:</b> Unknown',
-                    '<b>GID:</b> ' + download['gid']
+                    '<b>GID:</b><code> ' + download['gid'] + '</code>'
                 ]))
 
             response_text = '\n\n'.join(response_list)
