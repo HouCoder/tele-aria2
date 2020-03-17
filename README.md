@@ -1,5 +1,7 @@
 # tele-aria2
 
+⚠️：v2 is on the way, I'm rewriting the whole project with TypeScript, it will be a completely redesign, hopefully it will be finished before July 2020 😉.
+
 A Telegram bot for controlling your aria2 server.
 
 ![screenshot-overview](./screenshots/screenshot-1.png)
