@@ -1,31 +1,13 @@
-import ConfigParser
-
-# https://stackoverflow.com/a/2819788/4480674
-
-
-class _FakeSecHead(object):
-    def __init__(self, fp):
-        self.fp = fp
-        self.sechead = '[asection]\n'
-
-    def readline(self):
-        if self.sechead:
-            try:
-                return self.sechead
-            finally:
-                self.sechead = None
-        else:
-            return self.fp.readline()
-
+import configparser
 
 def config_reader(config_path):
-    cp = ConfigParser.SafeConfigParser()
+    config = configparser.ConfigParser()
     with open(config_path) as configs:
-        cp.readfp(_FakeSecHead(configs))
-
+        config_string = configs.read()
+    config.read_string(config_string)
     # Use dict to convert result to dixt
     # https://stackoverflow.com/a/1773820/4480674
-    return dict(cp.items('asection'))
+    return dict(config.items('telegram'))
 
 
 def merge_two_dicts(*dict_args):
@@ -98,7 +80,7 @@ def humanize_time(amount, units='seconds'):
 
         result = []
 
-        unit = map(lambda a: a[1], NAMES).index(units)
+        unit = list(map(lambda a: a[1], NAMES)).index(units)
         # Convert to seconds
         amount = amount * INTERVALS[unit]
 

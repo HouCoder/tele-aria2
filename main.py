@@ -18,12 +18,12 @@ def initial_args():
 
 
 def config_validator(config):
-    if 'tele-aria2.telegran-token' not in config:
-        print('tele-aria2.telegran-token is required!')
+    if 'bot-token' not in config:
+        print('bot-token is required!')
         exit(1)
 
-    if 'tele-aria2.telegran-id' not in config:
-        print('tele-aria2.telegran-id is required!')
+    if 'chat-ids' not in config:
+        print('chat-ids is required!')
         exit(1)
 
 

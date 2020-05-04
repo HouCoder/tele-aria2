@@ -3,9 +3,9 @@
 
 import logging
 import telegram
-import toolkits
+import src.toolkits as toolkits
 import os.path
-from aria2 import Aria2
+from src.aria2 import Aria2
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, DispatcherHandlerStop
 from telegram.error import TelegramError
 
@@ -15,9 +15,10 @@ class Bot:
         self.user_config = user_config
         self.__init_logging()
         self.aria2_actions = Aria2(self.user_config)
-        self.updater = Updater(token=self.user_config['tele-aria2.telegran-token'], request_kwargs={
-            'proxy_url': self.user_config['tele-aria2.proxy']
-        })
+        self.updater = Updater(
+                token=self.user_config['bot-token'], use_context=True,
+                request_kwargs={'proxy_url': self.user_config.get('proxy', None)}
+                )
 
     def __init_logging(self):
         """
@@ -33,10 +34,10 @@ class Bot:
         try:
             raise error
         except TelegramError as err:
-            print err
+            print(err)
 
     def __user_authentication(self, bot, update):
-        authorized_users = self.user_config['tele-aria2.telegran-id'].split(',')
+        authorized_users = self.user_config['chat-ids'].split(',')
 
         # https://github.com/python-telegram-bot/python-telegram-bot/issues/849
         if str(update.message.from_user.id) not in authorized_users:
@@ -61,19 +62,19 @@ class Bot:
         add_handler(CommandHandler('unpause', self.__do_something('unpause'), pass_args=True))
         add_handler(CommandHandler('unpauseAll', self.__do_something('unpause_all', False)))
 
-        add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
+        #add_handler(MessageHandler(Filters.all, self.__user_authentication), -1)
         add_handler(MessageHandler(Filters.document, self.__file_handler))
 
         # Add error handler.
         self.updater.dispatcher.add_error_handler(self.__error_callback)
 
-    def __command_start(self, bot, update):
+    def __command_start(self, update, context):
         update.message.reply_text('\n'.join([
             'Welcome to tele-aria2 bot!',
             'Send /help to get help',
         ]))
 
-    def __command_help(self, bot, update):
+    def __command_help(self, update, context):
         update.message.reply_text('\n'.join([
             'You can control your aria2 server by sending these commands:',
             '',
@@ -90,8 +91,10 @@ class Bot:
             'Want add torrent task? just simply send the torrent to me!'
         ]))
 
-    def __command_add_uri(self, bot, update, args):
+    def __command_add_uri(self, update, context):
         response = None
+        args = context.args
+        bot = context.bot
         if args:
             response = self.aria2_actions.add_uri(args)
         else:
@@ -101,8 +104,10 @@ class Bot:
         bot.send_message(chat_id=chat_id, text=response)
 
     def __do_something(self, task, require_gid=True):
-        def run_action(bot, update, args=None):
+        def run_action(update, context):
             response = None
+            args = context.args
+            bot = context.bot
 
             if require_gid and not args:
                 response = 'Please provide a gid.'
@@ -124,9 +129,11 @@ class Bot:
 
     def __tell_something(self, what):
 
-        def echo_result(bot, update, args=None):
+        def echo_result(update, context):
             chat_id = update.message.chat_id
             aria2_response = None
+            args = context.args
+            bot = context.bot
 
             # https://stackoverflow.com/a/3071/4480674
             action = getattr(self.aria2_actions, what)
@@ -226,7 +233,8 @@ class Bot:
                          text=self.aria2_actions.add_torrent(path),
                          )
 
-    def __file_handler(self, bot, update):
+    def __file_handler(self, update, context):
+        bot = context.bot
         # Create folder
         app_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         target_folder = os.path.join(app_path, '.received_files')
