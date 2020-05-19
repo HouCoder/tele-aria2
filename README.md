@@ -22,7 +22,7 @@ The newly rewritten project has a few advantages over the old:
 
 Once your bot is up and running, go back to Telegram and click Start:
 
-![start](./images/tele-aria2.start.gif)
+<img src="./images/tele-aria2.start.gif" alt="start" width="400px">
 
 As you can see, all the action menus are instantly available to use, no command required!
 
@@ -30,7 +30,7 @@ As you can see, all the action menus are instantly available to use, no command 
 
 It's really simple, you just send the HTTP/FTP/SFTP/Magnet url to the chat, it will recognize it and add your will to the Aria2 server!
 
-![start](./images/tele-aria2.download.gif)
+<img src="./images/tele-aria2.download.gif" alt="download" width="400px">
 
 **But I want to download from a torrent file**
 
