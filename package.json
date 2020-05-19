@@ -1,0 +1,46 @@
+{
+  "name": "tele-aria2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint \"**/*.ts\"",
+    "check": "gts check",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/needle": "^2.0.4",
+    "@types/uuid": "^7.0.0",
+    "@types/websocket": "^1.0.0",
+    "@types/ws": "^7.2.2",
+    "commander": "^5.1.0",
+    "needle": "^2.4.1",
+    "socks-proxy-agent": "^5.0.0",
+    "telegraf": "^3.36.0",
+    "typescript": "^3.8.3",
+    "uuid": "^7.0.3",
+    "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-typescript": "^7.0.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "gts": "^2.0.2",
+    "typescript": "^3.8.3",
+    "@types/node": "^13.11.1"
+  }
+}

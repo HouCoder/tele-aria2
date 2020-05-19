@@ -1,0 +1,11 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Tab indentation
+[*]
+trim_trailing_whitespace = true
+indent_style = space
+# TODO: This is not working, VSC still uses 4 spaces as indent size.
+indent_size = 2
