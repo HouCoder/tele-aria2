@@ -1,14 +1,14 @@
 export interface TaskItem {
   // Only available when using HTTP.
   bittorrent?: {
-      info: {
-          name: string;
-      }
+    info: {
+      name: string;
+    };
   };
 
   files: {
-      length: string;
-      path: string;
+    length: string;
+    path: string;
   }[];
 
   gid: string;

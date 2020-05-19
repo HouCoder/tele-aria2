@@ -2,8 +2,10 @@ import { SocksProxyAgent } from 'socks-proxy-agent';
 import Telegraf, { Markup, ContextMessageUpdate } from 'telegraf';
 import needle from 'needle';
 import Aria2 from './Aria2';
-import { TaskItem, aria2EventTypes } from '../interfaces';
-import { byte2Readable, getFilename, progress, getGidFromAction, isDownloadable } from './utilities';
+import { TaskItem, aria2EventTypes } from './typings';
+import {
+  byte2Readable, getFilename, progress, getGidFromAction, isDownloadable,
+} from './utilities';
 
 export default class Telegram {
   private bot: Telegraf<ContextMessageUpdate>;
@@ -17,11 +19,11 @@ export default class Telegram {
   private agent: SocksProxyAgent | undefined;
 
   constructor(options: {
-    tgBot: string,
-    tgUser: number,
-    proxy: string | undefined,
-    aria2Server: Aria2,
-    maxIndex: number,
+    tgBot: string;
+    tgUser: number;
+    proxy: string | undefined;
+    aria2Server: Aria2;
+    maxIndex: number;
   }) {
     this.allowedUser = options.tgUser;
     this.aria2Server = options.aria2Server;
@@ -37,13 +39,13 @@ export default class Telegram {
 
     this.registerAria2ServerEvents();
     this.authentication();
+    this.onStart();
     this.onMessage();
     this.onAction();
-    this.onStart();
   }
 
   private connect2Tg(tgSettings: {
-    tgBot: string,
+    tgBot: string;
   }): Telegraf<ContextMessageUpdate> {
     let additionalOptions = {};
 
@@ -52,14 +54,14 @@ export default class Telegram {
         telegram: {
           // https://github.com/telegraf/telegraf/issues/955
           agent: this.agent,
+        },
+      };
         }
-      }
-    }
 
     return new Telegraf(tgSettings.tgBot, additionalOptions);
   }
 
-  private authentication() {
+  private authentication(): void {
     this.bot.use((ctx, next) => {
       let incomingUserId;
 
@@ -73,15 +75,14 @@ export default class Telegram {
         return next();
       }
 
-      ctx.reply('You\'re not allowed to use this bot 😢.');
+      return ctx.reply('You\'re not allowed to use this bot 😢.');
     });
-
   }
 
   private replyOnAria2ServerEvent(event: aria2EventTypes, message: string): void {
     this.aria2Server.on(event, (params) => {
       if (params.length && params[0].gid) {
-        const gid = params[0].gid;
+        const { gid } = params[0];
 
         // Get task name by gid
         this.aria2Server.send('tellStatus', [gid], (task) => {
@@ -98,7 +99,8 @@ export default class Telegram {
   private registerAria2ServerEvents(): void {
     // It happens when try to pause a pausing task.
     this.aria2Server.on('error', (error) => {
-      // @ts-ignore This is a customized event, not easy to do it in the correct ts way, disable it for now.
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore This is a customized event, not easy to do it in the correct ts way.
       const message = `Error occured, code: ${error.code}, message: ${error.message}`;
       this.bot.telegram.sendMessage(this.allowedUser, message);
     });
@@ -110,44 +112,40 @@ export default class Telegram {
     this.replyOnAria2ServerEvent('downloadStop',     'Download stopped!'); // Calling aria2.remove can triger this event.
   }
 
-  private downloading(ctx: ContextMessageUpdate) {
+  private downloading(ctx: ContextMessageUpdate): void {
     this.aria2Server.send('tellActive', (data) => {
       if (Array.isArray(data)) {
-        const parsed = data.map((item: TaskItem) => {
-          return [
+        const parsed = data.map((item: TaskItem) => [
             `Name: ${getFilename(item)}`,
             `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
             `Size: ${byte2Readable(Number(item.totalLength))}`,
             `Speed: ${byte2Readable(Number(item.downloadSpeed), '/s')}`,
-          ].join('\n');
-        });
+        ].join('\n'));
 
-        let message = parsed.join('\n\n') || 'No active download!';
+        const message = parsed.join('\n\n') || 'No active download!';
 
         ctx.reply(message);
       }
     });
   }
 
-  private waiting(ctx: ContextMessageUpdate) {
-    this.aria2Server.send('tellWaiting',[-1, this.maxIndex], (data) => {
+  private waiting(ctx: ContextMessageUpdate): void {
+    this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
       if (Array.isArray(data)) {
-        const parsed = data.map((item: TaskItem) => {
-          return [
+        const parsed = data.map((item: TaskItem) => [
             `Name: ${getFilename(item)}`,
             `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
             `Size: ${byte2Readable(Number(item.totalLength))}`,
-          ].join('\n');
-        });
+        ].join('\n'));
 
-        let message = parsed.join('\n\n') || 'No waiting download!';
+        const message = parsed.join('\n\n') || 'No waiting download!';
 
         ctx.reply(message);
       }
     });
   }
 
-  private stopped(ctx: ContextMessageUpdate) {
+  private stopped(ctx: ContextMessageUpdate): void {
     this.aria2Server.send('tellStopped', [-1, this.maxIndex], (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => {
@@ -164,56 +162,56 @@ export default class Telegram {
           return messageEntities.join('\n');
         });
 
-        let message = parsed.join('\n\n') || 'No finished/stopped download!';
+        const message = parsed.join('\n\n') || 'No finished/stopped download!';
 
         ctx.reply(message);
       }
     });
   }
 
-  private pause(ctx: ContextMessageUpdate) {
+  private pause(ctx: ContextMessageUpdate): void {
     // List all active tasks
     this.aria2Server.send('tellActive', (data) => {
-      if (Array.isArray(data)) {
-        if (data.length === 0) {
-          return ctx.reply('No active task.');
+      if (!Array.isArray(data)) {
+        return;
         }
 
+      if (data.length === 0) {
+        ctx.reply('No active task.');
+      } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => {
-          return Markup.callbackButton(getFilename(item), `pause-task.${item.gid}`);
-        });
+        const buttons = data.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `pause-task.${item.gid}`));
 
         ctx.replyWithMarkdown(
           'Which one to pause?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra()
+          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
         );
       }
     });
   }
 
-  private resume(ctx: ContextMessageUpdate) {
+  private resume(ctx: ContextMessageUpdate): void {
     // List all waiting tasks
     this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
-      if (Array.isArray(data)) {
-        if (data.length === 0) {
-          return ctx.reply('No waiting task.');
+      if (!Array.isArray(data)) {
+        return;
         }
 
+      if (data.length === 0) {
+        ctx.reply('No waiting task.');
+      } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => {
-          return Markup.callbackButton(getFilename(item), `resume-task.${item.gid}`);
-        });
+        const buttons = data.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `resume-task.${item.gid}`));
 
         ctx.replyWithMarkdown(
           'Which one to resume?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra()
+          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
         );
       }
     });
   }
 
-  private remove(ctx: ContextMessageUpdate) {
+  private remove(ctx: ContextMessageUpdate): void {
     // List both waiting and active downloads
     const fullList: TaskItem[] = [];
 
@@ -233,21 +231,19 @@ export default class Telegram {
         }
 
         // Build callback buttons.
-        const buttons = fullList.map((item: TaskItem) => {
-          return Markup.callbackButton(getFilename(item), `remove-task.${item.gid}`);
-        });
+        const buttons = fullList.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `remove-task.${item.gid}`));
 
-        ctx.replyWithMarkdown(
+        return ctx.replyWithMarkdown(
           'Which one to remove?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra()
+          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
         );
       });
     });
   }
 
-  private generalAction(method: string, ctx: ContextMessageUpdate) {
+  private generalAction(method: string, ctx: ContextMessageUpdate): void {
     const data = ctx.update.callback_query?.data;
-    let gid: string = '';
+    let gid = '';
 
     if (data) {
       gid = getGidFromAction(data);
@@ -264,9 +260,9 @@ export default class Telegram {
     }
   }
 
-  private onMessage() {
+  private onMessage(): void {
     this.bot.on('message', (ctx) => {
-      const inComingText = ctx.update.message?.text
+      const inComingText = ctx.update.message?.text;
 
       if (inComingText) {
         console.log(`Received message: ${inComingText}`);
@@ -309,7 +305,7 @@ export default class Telegram {
           .then((url) => {
             // Download file
             needle.get(url, { agent: this.agent }, (error, response) => {
-              if (!error && response.statusCode == 200) {
+              if (!error && response.statusCode === 200) {
                 const base64EncodedTorrent = response.body.toString('base64');
                 this.aria2Server.send('addTorrent', [base64EncodedTorrent]);
               }
@@ -319,7 +315,7 @@ export default class Telegram {
     });
   }
 
-  private onAction() {
+  private onAction(): void {
     // Match all actions
     this.bot.action(/.*/, (ctx) => {
       const data = ctx.update.callback_query?.data;
@@ -328,7 +324,7 @@ export default class Telegram {
         return;
       }
 
-      const [actionName, gid] = data.split('.');
+      const actionName = data.split('.')[0];
 
       switch (actionName) {
         case 'pause-task':
@@ -340,11 +336,13 @@ export default class Telegram {
         case 'remove-task':
           this.generalAction('forceRemove', ctx);
           break;
+        default:
+          console.log(`No matched action for ${actionName}`);
       }
     });
   }
 
-  private onStart() {
+  private onStart(): void {
     this.bot.start((ctx) => {
       // Welcome message
       ctx.replyWithMarkdown(
@@ -352,7 +350,7 @@ export default class Telegram {
         Markup.inlineKeyboard([
           Markup.urlButton('️GitHub Page', 'https://github.com/HouCoder/tele-aria2'),
           Markup.urlButton('Contact Author ', 'https://t.me/TonniHou'),
-        ], { columns: 2 }).extra()
+        ], { columns: 2 }).extra(),
       );
 
       // Keyboard
@@ -366,7 +364,7 @@ export default class Telegram {
     });
   }
 
-  launch() {
+  launch(): void {
     this.bot.launch();
   }
 }

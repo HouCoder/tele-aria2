@@ -1,7 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
 import WebSocket from 'ws';
-import { Aria2EventCallback, GeneralCallback, RequestParams,
-  GeneralCallbacks, Aria2EventCallbacks, aria2EventTypes } from '../interfaces';
+import {
+  Aria2EventCallback, GeneralCallback, RequestParams,
+  GeneralCallbacks, Aria2EventCallbacks, aria2EventTypes,
+} from './typings';
 
 export default class Aria2 {
   private connection: WebSocket;
@@ -85,15 +87,17 @@ export default class Aria2 {
     return this;
   }
 
-  send(method: string, customizedParams?: (string|number|string[])[] | GeneralCallback, callback?: GeneralCallback): Aria2 {
+  send(method: string,
+    customizedParams?: (string|number|string[])[] | GeneralCallback,
+    callback?: GeneralCallback): Aria2 {
     if (this.connection.readyState === WebSocket.OPEN) {
       const requestId = uuidv4();
       const requestParams: {
-        jsonrpc: string,
-        method: string,
-        id: string,
+        jsonrpc: string;
+        method: string;
+        id: string;
         // Mixed types https://stackoverflow.com/a/29382420/4480674
-        params: (string|number|string[])[],
+        params: (string|number|string[])[];
       } = {
         jsonrpc: '2.0',
         method: `aria2.${method}`,
