@@ -18,9 +18,20 @@ The newly rewritten project has a few advantages over the old:
 1. `$ npm install tele-aria2 -g`.
 1. `$ tele-aria2 --help` to see how to get started.
 
+## Configuration example
+
+```json
+{
+  "aria2Server": "ws://192.168.1.154:6800/jsonrpc",
+  "proxy": "socks://127.0.0.1:7891",
+  "tgBot": "123456789:xxx",
+  "tgUser": 123456
+}
+```
+
 ## Usage
 
-Once your bot is up and running, go back to Telegram and click Start:
+Once your bot is up and running, go back to Telegram and click **Start**:
 
 <img src="./images/tele-aria2.start.gif" alt="start" width="400px">
 

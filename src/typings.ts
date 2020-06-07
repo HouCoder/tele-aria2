@@ -52,3 +52,16 @@ export interface RequestParams {
 export interface GeneralCallbacks {
   [propName: string]: GeneralCallback;
 }
+
+export interface UserOptions {
+  aria2Server?: string;
+  aria2Key?: string;
+  token?: string;
+  tgBot?: string;
+  tgUser?: number;
+  proxy?: string;
+  maxIndex?: number;
+  config?: string;
+}
+
+export type requiredOption = 'aria2Server' | 'tgBot' | 'tgUser';

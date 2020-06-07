@@ -56,7 +56,7 @@ export default class Telegram {
           agent: this.agent,
         },
       };
-        }
+    }
 
     return new Telegraf(tgSettings.tgBot, additionalOptions);
   }
@@ -105,21 +105,21 @@ export default class Telegram {
       this.bot.telegram.sendMessage(this.allowedUser, message);
     });
 
-    this.replyOnAria2ServerEvent('downloadStart',    'Download started!');
+    this.replyOnAria2ServerEvent('downloadStart', 'Download started!');
     this.replyOnAria2ServerEvent('downloadComplete', 'Download completed!');
-    this.replyOnAria2ServerEvent('downloadPause',    'Download paused!');
-    this.replyOnAria2ServerEvent('downloadError',    'Download error occured, please use the ✅Finished/Stopped menu to see the detail'); // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
-    this.replyOnAria2ServerEvent('downloadStop',     'Download stopped!'); // Calling aria2.remove can triger this event.
+    this.replyOnAria2ServerEvent('downloadPause', 'Download paused!');
+    this.replyOnAria2ServerEvent('downloadError', 'Download error occured, please use the ✅Finished/Stopped menu to see the detail'); // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
+    this.replyOnAria2ServerEvent('downloadStop', 'Download stopped!'); // Calling aria2.remove can triger this event.
   }
 
   private downloading(ctx: ContextMessageUpdate): void {
     this.aria2Server.send('tellActive', (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => [
-            `Name: ${getFilename(item)}`,
-            `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
-            `Size: ${byte2Readable(Number(item.totalLength))}`,
-            `Speed: ${byte2Readable(Number(item.downloadSpeed), '/s')}`,
+          `Name: ${getFilename(item)}`,
+          `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
+          `Size: ${byte2Readable(Number(item.totalLength))}`,
+          `Speed: ${byte2Readable(Number(item.downloadSpeed), '/s')}`,
         ].join('\n'));
 
         const message = parsed.join('\n\n') || 'No active download!';
@@ -133,9 +133,9 @@ export default class Telegram {
     this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => [
-            `Name: ${getFilename(item)}`,
-            `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
-            `Size: ${byte2Readable(Number(item.totalLength))}`,
+          `Name: ${getFilename(item)}`,
+          `Progress: ${progress(Number(item.totalLength), Number(item.completedLength))}`,
+          `Size: ${byte2Readable(Number(item.totalLength))}`,
         ].join('\n'));
 
         const message = parsed.join('\n\n') || 'No waiting download!';
@@ -174,7 +174,7 @@ export default class Telegram {
     this.aria2Server.send('tellActive', (data) => {
       if (!Array.isArray(data)) {
         return;
-        }
+      }
 
       if (data.length === 0) {
         ctx.reply('No active task.');
@@ -195,7 +195,7 @@ export default class Telegram {
     this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
       if (!Array.isArray(data)) {
         return;
-        }
+      }
 
       if (data.length === 0) {
         ctx.reply('No waiting task.');
@@ -357,9 +357,9 @@ export default class Telegram {
       ctx.replyWithMarkdown(
         'Please select an option',
         Markup.keyboard([
-          '⬇️Downloading',  '⌛️Waiting',       '✅Finished/Stopped',
+          '⬇️Downloading', '⌛️Waiting', '✅Finished/Stopped',
           '⏸️Pause a task', '▶️Resume a task', '❌Remove a task',
-        ], { columns: 3 }).extra()
+        ], { columns: 3 }).extra(),
       );
     });
   }
