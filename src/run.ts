@@ -1,12 +1,15 @@
+#!/usr/bin/env node
+
 import fs from 'fs';
+import path from 'path';
 import { program } from 'commander';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
 import { UserOptions, requiredOption } from './typings';
 
-// Read package.json
-const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+const packagePath = path.resolve(__dirname, '../package.json');
+const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
 
 program
   .version(packageJson.version)

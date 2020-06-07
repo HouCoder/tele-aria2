@@ -1,14 +1,17 @@
 {
   "name": "tele-aria2",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/run",
+  "bin": {
+    "tele-aria2": "./dist/run.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint \"**/*.ts\"",
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "tsc",
+    "compile": "rm -rf dist && tsc",
     "fix": "gts fix",
     "prepare": "npm run compile",
     "pretest": "npm run compile",
