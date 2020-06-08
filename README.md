@@ -2,6 +2,7 @@
 
 ![Logo](./images/logo.png)
 
+[![GitHub Actions][github-image]][github-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
 
 The newly rewritten project has a few advantages over the old:
@@ -53,5 +54,7 @@ No worries, just send your torrent file to chat!
 - [ ] Docker image
 - [ ] Unit testing
 
+[github-image]: https://github.com/HouCoder/tele-aria2/workflows/ci/badge.svg
+[github-url]: https://github.com/HouCoder/tele-aria2/actions
 [gts-image]: https://img.shields.io/badge/code%20style-google-blueviolet.svg
 [gts-url]: https://github.com/google/gts

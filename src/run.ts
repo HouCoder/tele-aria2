@@ -45,7 +45,7 @@ const logger = winston.createLogger({
     winston.format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    winston.format.simple()
+    winston.format.simple(),
   ),
   transports: [
     new winston.transports.Console(),
@@ -63,7 +63,7 @@ requiredOptions.forEach((requiredKey) => {
 });
 
 if (validateErrors.length) {
-  validateErrors.forEach(validateError => logger.error(validateError));
+  validateErrors.forEach((validateError) => logger.error(validateError));
 
   process.exit(1);
 }
