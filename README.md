@@ -1,4 +1,4 @@
-# Tele-aria2
+# tele-aria2
 
 ![Logo](./images/logo.png)
 
@@ -48,6 +48,8 @@ It's really simple, you just send any HTTP/FTP/SFTP/Magnet url to chat, it will 
 **But I want to download from a torrent file**
 
 No worries, just send your torrent file to chat!
+
+<img src="./images/tele-aria2.bt.png" alt="download bt" width="400px">
 
 ## TODO
 
