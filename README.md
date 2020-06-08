@@ -1,62 +1,62 @@
 # tele-aria2
 
-⚠️：v2 is on the way, I'm rewriting the whole project with TypeScript, it will be a completely redesign, hopefully it will be finished before July 2020 😉.
+![Logo](./images/logo.png)
 
-A Telegram bot for controlling your aria2 server.
+[![GitHub Actions][github-image]][github-url]
+[![TypeScript Style Guide][gts-image]][gts-url]
 
-![screenshot-overview](./screenshots/screenshot-1.png)
+The newly rewritten project has a few advantages over the old:
+
+1. Fully touch based, more easy to use, no command required to use this bot.
+2. Real time notification, it's now using Aria2's Websocket protocol to communicate.
+3. Better cli interface and config file support.
 
 ## Setup
 
-1. Create your own bot and get its HTTP access token by using [@BotFather](https://telegram.me/botfather).
-1. Add `tele-aria2.telegran-token=__YOUR_BOT_TOKEN__` to aria2 config file.
-1. Get your unique user ID by using [@get_id_bot](https://t.me/get_id_bot).
-1. Add `tele-aria2.telegran-id=__YOUR_UNIQUE_ID__` to aria2 config file(want multiple users? just use `,` to separate them).
-1. (Optional) For mainland China users, recommend to use `tele-aria2.proxy` for proxy support, e.g `tele-aria2.proxy=socks5://127.0.0.1:6154/`.
-1. `$ git clone https://github.com/HouCoder/tele-aria2.git`.
-1. `$ pip install python-telegram-bot PySocks`.
-1. `$ python main.py -c __aria2_config_path__`.
+1. Create your own bot and get its access token by using [@BotFather](https://telegram.me/botfather).
+1. Get your unique user ID - https://stackoverflow.com/a/32777943/4480674.
+1. (Optional) For mainland China users, be sure to have a proxy server running.
+1. `$ npm install tele-aria2 -g`.
+1. `$ tele-aria2 --help` to see how to get started.
 
-## Supported Actions
+## Configuration example
 
-**Wanna add torrent task? just simply send the torrent file to your bot.**
+```json
+{
+  "aria2Server": "ws://192.168.1.154:6800/jsonrpc",
+  "aria2Key": "xxx",
+  "proxy": "socks://127.0.0.1:7891",
+  "tgBot": "123456789:xxx",
+  "tgUser": 123456
+}
+```
 
-#### /add [uri]
+## Usage
 
-Add a new download, it supports HTTP/FTP/SFTP/BitTorrent URI.
+Once your bot is up and running, go back to Telegram and click **Start**:
 
-#### /remove [gid]
+<img src="./images/tele-aria2.start.gif" alt="start" width="400px">
 
-Remove download.
+As you can see, all the action menus are instantly available to use, no command required!
 
-#### /pause [gid]
+### How can I add a new task?
 
-Pause download.
+It's really simple, you just send any HTTP/FTP/SFTP/Magnet url to chat, it will recognize and add it to Aria2 server!
 
-#### /pauseAll
+<img src="./images/tele-aria2.download.gif" alt="download" width="400px">
 
-Pause all downloads.
+**But I want to download from a torrent file**
 
-#### /unpause [gid]
+No worries, just send your torrent file to chat!
 
-Unpause download.
+<img src="./images/tele-aria2.bt.png" alt="download bt" width="400px">
 
-#### /unpauseAll
+## TODO
 
-Unpause all downloads.
+- [ ] Docker image
+- [ ] Unit testing
 
-#### /tellActive
-
-Return a list of active downloads.
-
-#### /tellWaiting
-
-Return a list of the latest 10 waiting downloads.
-
-#### /tellStopped
-
-Return a list of the latest 10 stopped downloads.
-
-## Discussion & feedback
-
-If you have any question, feel free to discuss at our Telegram channel - [tele-aria2](https://t.me/joinchat/BX8nShFgXeZKNOEjXKukNQ).
+[github-image]: https://github.com/HouCoder/tele-aria2/workflows/ci/badge.svg
+[github-url]: https://github.com/HouCoder/tele-aria2/actions
+[gts-image]: https://img.shields.io/badge/code%20style-google-blueviolet.svg
+[gts-url]: https://github.com/google/gts
