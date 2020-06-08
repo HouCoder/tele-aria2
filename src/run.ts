@@ -3,6 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { program } from 'commander';
+import winston from 'winston';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
@@ -37,6 +38,20 @@ if (options.config) {
 options.maxIndex = options.maxIndex ? Number(options.maxIndex) : 20;
 options.tgUser = Number(options.tgUser);
 
+const logger = winston.createLogger({
+  level: options.verbose ? 'verbose' : 'info',
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
+    }),
+    winston.format.simple()
+  ),
+  transports: [
+    new winston.transports.Console(),
+  ],
+});
+
 // Validate final options.
 const requiredOptions: requiredOption[] = ['aria2Server', 'tgBot', 'tgUser'];
 const validateErrors: string[] = [];
@@ -48,7 +63,7 @@ requiredOptions.forEach((requiredKey) => {
 });
 
 if (validateErrors.length) {
-  console.log(validateErrors.join('\n'));
+  validateErrors.forEach(validateError => logger.error(validateError));
 
   process.exit(1);
 }
@@ -56,6 +71,7 @@ if (validateErrors.length) {
 const aria2Server = new Aria2({
   endpoint: options.aria2Server as string,
   token: options.aria2Key,
+  logger,
 });
 
 new Telegram({
@@ -64,4 +80,5 @@ new Telegram({
   tgUser: options.tgUser,
   proxy: options.proxy,
   maxIndex: options.maxIndex,
+  logger,
 }).launch();

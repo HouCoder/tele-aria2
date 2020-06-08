@@ -62,6 +62,7 @@ export interface UserOptions {
   proxy?: string;
   maxIndex?: number;
   config?: string;
+  verbose?: boolean;
 }
 
 export type requiredOption = 'aria2Server' | 'tgBot' | 'tgUser';

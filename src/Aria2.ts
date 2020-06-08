@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import WebSocket from 'ws';
+import winston from 'winston';
 import {
   Aria2EventCallback, GeneralCallback, RequestParams,
   GeneralCallbacks, Aria2EventCallbacks, aria2EventTypes,
@@ -10,14 +11,22 @@ export default class Aria2 {
 
   private token: string | undefined;
 
+  private logger: winston.Logger;
+
   private rpcQueue: RequestParams[] = [];
 
   private aria2Events: Aria2EventCallbacks = {};
 
   private callbackQueue: GeneralCallbacks = {};
 
-  constructor(settings: {endpoint: string; token: string | undefined}) {
+  constructor(settings: {
+    endpoint: string;
+    token: string | undefined;
+    logger: winston.Logger;
+  }) {
     this.connection = new WebSocket(settings.endpoint);
+
+    this.logger = settings.logger;
 
     if (settings.token) {
       this.token = settings.token;
@@ -38,7 +47,7 @@ export default class Aria2 {
   }
 
   private onWsOpen(): void {
-    console.log('Connection opened.');
+    this.logger.info('Websocket connection opened');
 
     while (this.rpcQueue.length) {
       const first: RequestParams | undefined = this.rpcQueue.shift();
@@ -52,8 +61,8 @@ export default class Aria2 {
   private onWsMessage(message: string): void {
     const parsedMessage = JSON.parse(message);
 
-    console.log('Message received.');
-    console.dir(parsedMessage, { depth: null });
+    this.logger.info('Received message from Aria2 server');
+    this.logger.verbose('Received message', parsedMessage);
 
     if (parsedMessage.error && this.aria2Events['aria2.onerror']) {
       this.aria2Events['aria2.onerror'](parsedMessage.error);
@@ -74,11 +83,11 @@ export default class Aria2 {
   }
 
   private onWsError(error: Error): void {
-    console.log(`Error: ${error.message}.`);
+    this.logger.warn(error.message);
   }
 
   private onWsClose(): void {
-    console.log('Connection closed.');
+    this.logger.info('Websocket connection closed');
   }
 
   on(event: aria2EventTypes, callback: Aria2EventCallback): Aria2 {
@@ -123,6 +132,8 @@ export default class Aria2 {
         this.callbackQueue[requestId] = callback;
       }
 
+      this.logger.info('Sending message to Aria2 server');
+      this.logger.verbose('Message payload to Aria2 server', requestParams);
       this.connection.send(JSON.stringify(requestParams));
     } else {
       // Push task to rpcQueue

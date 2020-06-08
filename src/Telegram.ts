@@ -1,6 +1,7 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import Telegraf, { Markup, ContextMessageUpdate } from 'telegraf';
 import needle from 'needle';
+import winston from 'winston';
 import Aria2 from './Aria2';
 import { TaskItem, aria2EventTypes } from './typings';
 import {
@@ -11,6 +12,8 @@ export default class Telegram {
   private bot: Telegraf<ContextMessageUpdate>;
 
   private aria2Server: Aria2;
+
+  private logger: winston.Logger;
 
   private allowedUser: number;
 
@@ -24,10 +27,12 @@ export default class Telegram {
     proxy: string | undefined;
     aria2Server: Aria2;
     maxIndex: number;
+    logger: winston.Logger;
   }) {
     this.allowedUser = options.tgUser;
     this.aria2Server = options.aria2Server;
     this.maxIndex = options.maxIndex;
+    this.logger = options.logger;
 
     if (options.proxy) {
       this.agent = new SocksProxyAgent(options.proxy);
@@ -255,7 +260,7 @@ export default class Telegram {
 
         this.aria2Server.send(method, [gid]);
       } else {
-        // console.log('No gid presented.');
+        this.logger.warn('No gid presented');
       }
     }
   }
@@ -265,7 +270,7 @@ export default class Telegram {
       const inComingText = ctx.update.message?.text;
 
       if (inComingText) {
-        console.log(`Received message: ${inComingText}`);
+        this.logger.info(`Received message from Telegram: ${inComingText}`);
 
         switch (inComingText) {
           case '⬇️Downloading':
@@ -290,7 +295,7 @@ export default class Telegram {
             if (isDownloadable(inComingText)) {
               this.aria2Server.send('addUri', [[inComingText]]);
             } else {
-              console.log(`Unable to a parse the request: ${inComingText}`);
+              this.logger.warn(`Unable to a parse the request: ${inComingText}`);
             }
         }
       }
@@ -299,7 +304,7 @@ export default class Telegram {
 
       // Receive BT file
       if (document && document.file_name && isDownloadable(document.file_name)) {
-        console.log(`Received BT file: ${document.file_name}`);
+        this.logger.info(`Received BT file from Telegram: ${document.file_name}`);
 
         ctx.telegram.getFileLink(document.file_id)
           .then((url) => {
@@ -337,7 +342,7 @@ export default class Telegram {
           this.generalAction('forceRemove', ctx);
           break;
         default:
-          console.log(`No matched action for ${actionName}`);
+          this.logger.warn(`No matched action for ${actionName}`);
       }
     });
   }
