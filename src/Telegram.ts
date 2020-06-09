@@ -1,5 +1,5 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import Telegraf, { Markup, ContextMessageUpdate } from 'telegraf';
+import Telegraf, { Markup, Context } from 'telegraf';
 import needle from 'needle';
 import winston from 'winston';
 import Aria2 from './Aria2';
@@ -9,7 +9,7 @@ import {
 } from './utilities';
 
 export default class Telegram {
-  private bot: Telegraf<ContextMessageUpdate>;
+  private bot: Telegraf<Context>;
 
   private aria2Server: Aria2;
 
@@ -51,7 +51,7 @@ export default class Telegram {
 
   private connect2Tg(tgSettings: {
     tgBot: string;
-  }): Telegraf<ContextMessageUpdate> {
+  }): Telegraf<Context> {
     let additionalOptions = {};
 
     if (this.agent) {
@@ -117,7 +117,7 @@ export default class Telegram {
     this.replyOnAria2ServerEvent('downloadStop', 'Download stopped!'); // Calling aria2.remove can triger this event.
   }
 
-  private downloading(ctx: ContextMessageUpdate): void {
+  private downloading(ctx: Context): void {
     this.aria2Server.send('tellActive', (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => [
@@ -134,7 +134,7 @@ export default class Telegram {
     });
   }
 
-  private waiting(ctx: ContextMessageUpdate): void {
+  private waiting(ctx: Context): void {
     this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => [
@@ -150,7 +150,7 @@ export default class Telegram {
     });
   }
 
-  private stopped(ctx: ContextMessageUpdate): void {
+  private stopped(ctx: Context): void {
     this.aria2Server.send('tellStopped', [-1, this.maxIndex], (data) => {
       if (Array.isArray(data)) {
         const parsed = data.map((item: TaskItem) => {
@@ -174,7 +174,7 @@ export default class Telegram {
     });
   }
 
-  private pause(ctx: ContextMessageUpdate): void {
+  private pause(ctx: Context): void {
     // List all active tasks
     this.aria2Server.send('tellActive', (data) => {
       if (!Array.isArray(data)) {
@@ -195,7 +195,7 @@ export default class Telegram {
     });
   }
 
-  private resume(ctx: ContextMessageUpdate): void {
+  private resume(ctx: Context): void {
     // List all waiting tasks
     this.aria2Server.send('tellWaiting', [-1, this.maxIndex], (data) => {
       if (!Array.isArray(data)) {
@@ -216,7 +216,7 @@ export default class Telegram {
     });
   }
 
-  private remove(ctx: ContextMessageUpdate): void {
+  private remove(ctx: Context): void {
     // List both waiting and active downloads
     const fullList: TaskItem[] = [];
 
@@ -246,7 +246,7 @@ export default class Telegram {
     });
   }
 
-  private generalAction(method: string, ctx: ContextMessageUpdate): void {
+  private generalAction(method: string, ctx: Context): void {
     const data = ctx.update.callback_query?.data;
     let gid = '';
 
