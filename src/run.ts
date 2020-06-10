@@ -53,6 +53,8 @@ const logger = winston.createLogger({
   ],
 });
 
+logger.verbose('Received options', options);
+
 // Validate final options.
 const requiredOptions: RequiredOption[] = ['aria2Server', 'tgBot', 'tgUser'];
 const validateErrors: string[] = [];

@@ -1,7 +1,7 @@
 {
   "name": "tele-aria2",
   "version": "0.1.0-beta.0",
-  "description": "",
+  "description": "Control your Aria2 server through Telegram",
   "main": "./dist/run.js",
   "types": "./dist/typings.d.ts",
   "bin": {
@@ -21,7 +21,7 @@
     "pretest": "npm run compile",
     "posttest": "npm run check"
   },
-  "keywords": [],
+  "keywords": ["Aria2", "Telegram", "telegraf"],
   "author": "",
   "license": "ISC",
   "dependencies": {
