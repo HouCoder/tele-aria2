@@ -28,8 +28,8 @@
     "telegraf"
   ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/HouCoder/tele-aria2.git"
+    "type": "git",
+    "url": "https://github.com/HouCoder/tele-aria2.git"
   },
   "author": "HouCoder<hby3387@gmail.com>",
   "license": "MIT",

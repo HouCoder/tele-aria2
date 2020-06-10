@@ -2,6 +2,7 @@
 
 ![Logo](https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/logo.png)
 
+[![NPM Version][npm-image]][npm-url]
 [![GitHub Actions][github-image]][github-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
 
@@ -56,6 +57,8 @@ No worries, just send your torrent file to chat!
 - [ ] Docker image
 - [ ] Unit testing
 
+[npm-image]: https://img.shields.io/npm/v/tele-aria2.svg
+[npm-url]: https://npmjs.org/package/tele-aria2
 [github-image]: https://github.com/HouCoder/tele-aria2/workflows/ci/badge.svg
 [github-url]: https://github.com/HouCoder/tele-aria2/actions
 [gts-image]: https://img.shields.io/badge/code%20style-google-blueviolet.svg
