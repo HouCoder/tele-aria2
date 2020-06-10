@@ -8,6 +8,12 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'class-methods-use-this': 'off',
+    'function-paren-newline': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'max-len': ['error', {
+      code: 120,
+      ignoreComments: true,
+    }],
   },
   plugins: [
     '@typescript-eslint',

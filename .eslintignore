@@ -4,3 +4,5 @@ node_modules
 dist
 # don't lint nyc coverage output
 coverage
+# https://github.com/typescript-eslint/typescript-eslint/issues/1723#issuecomment-634640844
+.eslintrc.js

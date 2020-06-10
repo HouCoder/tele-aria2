@@ -3,7 +3,7 @@ import WebSocket from 'ws';
 import winston from 'winston';
 import {
   Aria2EventCallback, GeneralCallback, RequestParams,
-  GeneralCallbacks, Aria2EventCallbacks, aria2EventTypes,
+  GeneralCallbacks, Aria2EventCallbacks, Aria2EventTypes,
 } from './typings';
 
 export default class Aria2 {
@@ -90,7 +90,7 @@ export default class Aria2 {
     this.logger.info('Websocket connection closed');
   }
 
-  on(event: aria2EventTypes, callback: Aria2EventCallback): Aria2 {
+  on(event: Aria2EventTypes, callback: Aria2EventCallback): Aria2 {
     const fullEventName = `aria2.on${event.toLowerCase()}`;
     this.aria2Events[fullEventName] = callback;
     return this;

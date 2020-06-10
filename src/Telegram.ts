@@ -3,7 +3,7 @@ import Telegraf, { Markup, Context } from 'telegraf';
 import needle, { NeedleResponse } from 'needle';
 import winston from 'winston';
 import Aria2 from './Aria2';
-import { TaskItem, aria2EventTypes } from './typings';
+import { TaskItem, Aria2EventTypes } from './typings';
 import {
   byte2Readable, getFilename, progress, getGidFromAction, isDownloadable,
 } from './utilities';
@@ -84,7 +84,7 @@ export default class Telegram {
     });
   }
 
-  private replyOnAria2ServerEvent(event: aria2EventTypes, message: string): void {
+  private replyOnAria2ServerEvent(event: Aria2EventTypes, message: string): void {
     this.aria2Server.on(event, (params) => {
       if (params.length && params[0].gid) {
         const { gid } = params[0];
@@ -104,7 +104,6 @@ export default class Telegram {
   private registerAria2ServerEvents(): void {
     // It happens when try to pause a pausing task.
     this.aria2Server.on('error', (error) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore This is a customized event, not easy to do it in the correct ts way.
       const message = `Error occured, code: ${error.code}, message: ${error.message}`;
       this.bot.telegram.sendMessage(this.allowedUser, message);
@@ -113,7 +112,10 @@ export default class Telegram {
     this.replyOnAria2ServerEvent('downloadStart', 'Download started!');
     this.replyOnAria2ServerEvent('downloadComplete', 'Download completed!');
     this.replyOnAria2ServerEvent('downloadPause', 'Download paused!');
-    this.replyOnAria2ServerEvent('downloadError', 'Download error occured, please use the ✅Finished/Stopped menu to see the detail'); // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
+    // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
+    this.replyOnAria2ServerEvent('downloadError',
+      'Download error occured, please use the ✅Finished/Stopped menu to see the detail',
+    );
     this.replyOnAria2ServerEvent('downloadStop', 'Download stopped!'); // Calling aria2.remove can triger this event.
   }
 
@@ -185,7 +187,9 @@ export default class Telegram {
         ctx.reply('No active task.');
       } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `pause-task.${item.gid}`));
+        const buttons = data.map((item: TaskItem) => Markup.callbackButton(
+          getFilename(item), `pause-task.${item.gid}`),
+        );
 
         ctx.replyWithMarkdown(
           'Which one to pause?',
@@ -206,7 +210,9 @@ export default class Telegram {
         ctx.reply('No waiting task.');
       } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `resume-task.${item.gid}`));
+        const buttons = data.map((item: TaskItem) => Markup.callbackButton(
+          getFilename(item), `resume-task.${item.gid}`),
+        );
 
         ctx.replyWithMarkdown(
           'Which one to resume?',
@@ -236,7 +242,9 @@ export default class Telegram {
         }
 
         // Build callback buttons.
-        const buttons = fullList.map((item: TaskItem) => Markup.callbackButton(getFilename(item), `remove-task.${item.gid}`));
+        const buttons = fullList.map(
+          (item: TaskItem) => Markup.callbackButton(getFilename(item), `remove-task.${item.gid}`),
+        );
 
         return ctx.replyWithMarkdown(
           'Which one to remove?',

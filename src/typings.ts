@@ -37,7 +37,8 @@ export interface Aria2EventCallback {
 }
 
 // https://aria2.github.io/manual/en/html/aria2c.html#notifications
-export type aria2EventTypes = 'downloadStart' | 'downloadPause' | 'downloadStop' | 'downloadComplete' | 'downloadError' | 'btDownloadComplete' | 'error';
+export type Aria2EventTypes = 'downloadStart' | 'downloadPause' | 'downloadStop' | 'downloadComplete' |
+'downloadError' | 'btDownloadComplete' | 'error';
 
 export interface Aria2EventCallbacks {
   [propName: string]: Aria2EventCallback;
@@ -65,4 +66,4 @@ export interface UserOptions {
   verbose?: boolean;
 }
 
-export type requiredOption = 'aria2Server' | 'tgBot' | 'tgUser';
+export type RequiredOption = 'aria2Server' | 'tgBot' | 'tgUser';

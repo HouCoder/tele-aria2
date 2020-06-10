@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "",
   "main": "./dist/run",
+  "types": "./dist/typings.d.ts",
   "bin": {
     "tele-aria2": "./dist/run.js"
   },

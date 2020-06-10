@@ -7,7 +7,7 @@ import winston from 'winston';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
-import { UserOptions, requiredOption } from './typings';
+import { UserOptions, RequiredOption } from './typings';
 
 const packagePath = path.resolve(__dirname, '../package.json');
 const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
@@ -17,6 +17,7 @@ program
   .option('-s, --aria2-server <aria2 server endpoint>', 'Aria2 server endpoint, e.g. ws://192.168.1.119:6800/jsonrpc')
   .option('-k, --aria2-key    <aria2 rpc key>', 'Aria2 server secret key')
   .option('-b, --tg-bot       <telegram bot key>', 'Telegram bot key')
+  // eslint-disable-next-line max-len
   .option('-u, --tg-user      <telegram user id>', 'Telegram user ID, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
   .option('-p, --proxy        <proxy>', 'Access Telegram server through a proxy')
   .option('-m, --max-index    <maximum index>', 'Max items in the range of [1, max-index], default 20')
@@ -53,7 +54,7 @@ const logger = winston.createLogger({
 });
 
 // Validate final options.
-const requiredOptions: requiredOption[] = ['aria2Server', 'tgBot', 'tgUser'];
+const requiredOptions: RequiredOption[] = ['aria2Server', 'tgBot', 'tgUser'];
 const validateErrors: string[] = [];
 
 requiredOptions.forEach((requiredKey) => {

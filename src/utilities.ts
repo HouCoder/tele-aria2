@@ -25,7 +25,7 @@ export function byte2Readable(byte: number, prefix = ''): string {
 
 // Use any to avoid complex type checking,
 // or to use the same types as GeneralCallback to be precise.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
 export function getFilename(task: any): string {
   if (task.constructor !== Object) {
     return '';
