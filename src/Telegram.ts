@@ -1,6 +1,6 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import Telegraf, { Markup, Context } from 'telegraf';
-import needle from 'needle';
+import needle, { NeedleResponse } from 'needle';
 import winston from 'winston';
 import Aria2 from './Aria2';
 import { TaskItem, aria2EventTypes } from './typings';
@@ -309,7 +309,8 @@ export default class Telegram {
         ctx.telegram.getFileLink(document.file_id)
           .then((url) => {
             // Download file
-            needle.get(url, { agent: this.agent }, (error, response) => {
+            // @ts-ignore - TODO: https://github.com/TooTallNate/node-socks-proxy-agent/issues/52
+            needle.get(url, { agent: this.agent }, (error: Error, response: NeedleResponse) => {
               if (!error && response.statusCode === 200) {
                 const base64EncodedTorrent = response.body.toString('base64');
                 this.aria2Server.send('addTorrent', [base64EncodedTorrent]);
