@@ -1,6 +1,6 @@
 # tele-aria2
 
-![Logo](https://github.com/HouCoder/tele-aria2/blob/master/images/logo.png)
+![Logo](https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/logo.png)
 
 [![GitHub Actions][github-image]][github-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
@@ -35,7 +35,7 @@ The newly rewritten project has a few advantages over the old:
 
 Once your bot is up and running, go back to Telegram and click **Start**:
 
-<img src="https://github.com/HouCoder/tele-aria2/blob/master/images/tele-aria2.start.gif" alt="start" width="400px">
+<img src="https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/tele-aria2.start.gif" alt="start" width="400px">
 
 As you can see, all the action menus are instantly available to use, no command required!
 
@@ -43,13 +43,13 @@ As you can see, all the action menus are instantly available to use, no command 
 
 It's really simple, you just send any HTTP/FTP/SFTP/Magnet url to chat, it will recognize and add it to Aria2 server!
 
-<img src="https://github.com/HouCoder/tele-aria2/blob/master/images/tele-aria2.download.gif" alt="download" width="400px">
+<img src="https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/tele-aria2.download.gif" alt="start" width="400px">
 
 **But I want to download from a torrent file**
 
 No worries, just send your torrent file to chat!
 
-<img src="https://github.com/HouCoder/tele-aria2/blob/master/images/tele-aria2.bt.png" alt="download bt" width="400px">
+<img src="https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/tele-aria2.bt.png" alt="start" width="400px">
 
 ## TODO
 

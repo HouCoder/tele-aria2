@@ -2,6 +2,7 @@
   "name": "tele-aria2",
   "version": "0.1.0-beta.1",
   "description": "Control your Aria2 server through Telegram",
+  "homepage": "https://github.com/HouCoder/tele-aria2#tele-aria2",
   "main": "./dist/run.js",
   "types": "./dist/typings.d.ts",
   "bin": {
@@ -26,8 +27,12 @@
     "Telegram",
     "telegraf"
   ],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/HouCoder/tele-aria2.git"
+  },
+  "author": "HouCoder<hby3387@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@types/needle": "^2.0.4",
     "@types/uuid": "^8.0.0",
