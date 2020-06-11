@@ -19,7 +19,7 @@ program
   .option('-b, --tg-bot       <telegram bot key>', 'Telegram bot key')
   // eslint-disable-next-line max-len
   .option('-u, --tg-user      <telegram user id>', 'Telegram user ID, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
-  .option('-p, --proxy        <proxy>', 'Access Telegram server through a proxy')
+  .option('-p, --proxy        <proxy>', 'Access Telegram server through a HTTP proxy')
   .option('-m, --max-index    <maximum index>', 'Max items in the range of [1, max-index], default 20')
   .option('-c, --config       <config file path>', 'Load options from a JSON config file')
   .option('-V, --version', 'Output the current version')

@@ -1,4 +1,4 @@
-import { SocksProxyAgent } from 'socks-proxy-agent';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import Telegraf, { Markup, Context } from 'telegraf';
 import needle, { NeedleResponse } from 'needle';
 import winston from 'winston';
@@ -19,7 +19,7 @@ export default class Telegram {
 
   private maxIndex: number;
 
-  private agent: SocksProxyAgent | undefined;
+  private agent: HttpsProxyAgent | undefined;
 
   constructor(options: {
     tgBot: string;
@@ -35,7 +35,7 @@ export default class Telegram {
     this.logger = options.logger;
 
     if (options.proxy) {
-      this.agent = new SocksProxyAgent(options.proxy);
+      this.agent = new HttpsProxyAgent(options.proxy);
     }
 
     this.bot = this.connect2Tg({

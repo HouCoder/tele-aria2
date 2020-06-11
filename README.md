@@ -6,7 +6,7 @@
 [![GitHub Actions][github-image]][github-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
 
-The newly rewritten project has a few advantages over the old:
+The newly rewritten project has a few advantages over [the old one](https://github.com/HouCoder/tele-aria2/tree/legacy-python):
 
 1. Fully touch based, more easy to use, no command required to use this bot.
 2. Real time notification, it's now using Aria2's Websocket protocol to communicate.
@@ -16,19 +16,20 @@ The newly rewritten project has a few advantages over the old:
 
 1. Create your own bot and get its access token by using [@BotFather](https://telegram.me/botfather).
 1. Get your unique user ID - https://stackoverflow.com/a/32777943/4480674.
-1. (Optional) For mainland China users, be sure to have a socks proxy server running.
+1. (Optional) For mainland China users, be sure to have a **HTTP** proxy up and running.
 1. `$ npm install tele-aria2 -g`.
 1. `$ tele-aria2 --help` to see how to get started.
 
-## Configuration example
+## Configuration file example
 
 ```json
 {
   "aria2Server": "ws://192.168.1.154:6800/jsonrpc",
   "aria2Key": "xxx",
-  "proxy": "socks://127.0.0.1:7891",
+  "proxy": "http://127.0.0.1:7890",
   "tgBot": "123456789:xxx",
-  "tgUser": 123456
+  "tgUser": 123456,
+  "maxIndex": 10
 }
 ```
 
@@ -56,6 +57,7 @@ No worries, just send your torrent file to chat!
 
 - [ ] Docker image
 - [ ] Unit testing
+- [ ] Auto release to npm
 
 [npm-image]: https://img.shields.io/npm/v/tele-aria2.svg
 [npm-url]: https://npmjs.org/package/tele-aria2

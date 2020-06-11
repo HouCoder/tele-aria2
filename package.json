@@ -1,6 +1,6 @@
 {
   "name": "tele-aria2",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0",
   "description": "Control your Aria2 server through Telegram",
   "homepage": "https://github.com/HouCoder/tele-aria2#tele-aria2",
   "main": "./dist/run.js",
@@ -39,8 +39,8 @@
     "@types/websocket": "^1.0.0",
     "@types/ws": "^7.2.5",
     "commander": "^5.1.0",
+    "https-proxy-agent": "^5.0.0",
     "needle": "^2.5.0",
-    "socks-proxy-agent": "^5.0.0",
     "telegraf": "^3.38.0",
     "typescript": "^3.9.5",
     "uuid": "^8.1.0",
