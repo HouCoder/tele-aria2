@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - dev
   pull_request:
 name: ci
 
