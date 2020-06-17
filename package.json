@@ -13,7 +13,6 @@
   ],
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
-    "lint": "eslint \"**/*.ts\"",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "rm -rf dist && tsc",

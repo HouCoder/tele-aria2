@@ -56,7 +56,7 @@ describe('Get filename', () => {
   it('Should get the filename of a simple HTTP protocol', () => {
     const task = {
       files: [{
-        'path': '/downloads/PCQQ2020.exe',
+        path: '/downloads/PCQQ2020.exe',
       }],
     };
 
@@ -111,6 +111,8 @@ describe('Determine if a uri is downloadable or not', () => {
   });
 
   it('Should be true for BT file', () => {
-    expect(utilities.isDownloadable('https://releases.ubuntu.com/20.04/ubuntu-20.04-desktop-amd64.iso.torrent')).to.be.true;
+    const result = utilities.isDownloadable('https://releases.ubuntu.com/20.04/ubuntu-20.04-desktop-amd64.iso.torrent');
+
+    expect(result).to.be.true;
   });
 });

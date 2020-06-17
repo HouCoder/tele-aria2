@@ -3,7 +3,8 @@ export function byte2Readable(byte: number, prefix = ''): string {
   const kb = 1024;
   const mb = kb * 1024;
   const gb = mb * 1024;
-  let readable, unit;
+  let readable; let
+    unit;
 
   if (byte >= gb) {
     // xx GB

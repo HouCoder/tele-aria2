@@ -10,6 +10,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'function-paren-newline': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-unused-expressions': 'off',
     'max-len': ['error', {
       code: 120,
       ignoreComments: true,
