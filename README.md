@@ -21,16 +21,32 @@ The newly rewritten project has a few advantages over [the old one](https://gith
 1. `$ npm install tele-aria2 -g`.
 1. `$ tele-aria2 --help` to see how to get started.
 
-## Configuration file example
+## 3 ways to pass parameters
+
+You can pass parameters to tele-aria2 in 3 ways:
+
+1. cli
+2. environment variable
+3. configuration file
+
+Option Priorities also follow this order, so cli has the highest priority.
+
+|                             	| Aria2 server    	| Aria2 key    	| Telegram bot key 	| Telegram user id 	| Proxy       	| Max items in range(default 20) 	|
+|-----------------------------	|-----------------	|--------------	|------------------	|------------------	|-------------	|--------------------------------	|
+| cli option                  	| --aria2-server  	| --aria2-key  	| --bot-key        	| --user-id        	| --proxy     	| --max-index                    	|
+| environment variable option 	| ta.aria2-server 	| ta.aria2-key 	| ta.bot-key       	| ta.user-id       	| https_proxy 	| ta.max-index                   	|
+| configuration file option   	| aria2-server    	| aria2-key    	| bot-key          	| user-id          	| proxy       	| max-index                      	|
+
+### configuration file example
 
 ```json
 {
-  "aria2Server": "ws://192.168.1.154:6800/jsonrpc",
-  "aria2Key": "xxx",
+  "aria2-server": "ws://192.168.1.154:6800/jsonrpc",
+  "aria2-key": "xxx",
   "proxy": "http://127.0.0.1:7890",
-  "tgBot": "123456789:xxx",
-  "tgUser": 123456,
-  "maxIndex": 10
+  "bot-key": "123456789:xxx",
+  "user-id": 123456,
+  "max-index": 10
 }
 ```
 

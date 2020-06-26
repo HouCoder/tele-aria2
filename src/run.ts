@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { program } from 'commander';
 import winston from 'winston';
+import { mergeWith } from 'lodash';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
@@ -12,32 +13,59 @@ import { UserOptions, RequiredOption } from './typings';
 const packagePath = path.resolve(__dirname, '../package.json');
 const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
 
+/* eslint-disable no-multi-spaces, max-len */
 program
   .version(packageJson.version)
   .option('-s, --aria2-server <aria2 server endpoint>', 'Aria2 server endpoint, e.g. ws://192.168.1.119:6800/jsonrpc')
-  .option('-k, --aria2-key    <aria2 rpc key>', 'Aria2 server secret key')
-  .option('-b, --tg-bot       <telegram bot key>', 'Telegram bot key')
-  // eslint-disable-next-line max-len
-  .option('-u, --tg-user      <telegram user id>', 'Telegram user ID, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
-  .option('-p, --proxy        <proxy>', 'Access Telegram server through a HTTP proxy')
-  .option('-m, --max-index    <maximum index>', 'Max items in the range of [1, max-index], default 20')
-  .option('-c, --config       <config file path>', 'Load options from a JSON config file')
-  .option('-V, --version', 'Output the current version')
-  .option('-v, --verbose', 'Verbose output');
+  .option('-k, --aria2-key    <aria2 rpc key>',         'Aria2 server secret key')
+  .option('-b, --bot-key      <telegram bot key>',      'Telegram bot key')
+  .option('-u, --user-id      <telegram user id>',      'Telegram user ID, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
+  .option('-p, --proxy        <proxy>',                 'Access Telegram server through a HTTP proxy')
+  .option('-m, --max-index    <maximum index>',         'Max items in the range of [1, max-index], default 20')
+  .option('-c, --config       <config file path>',      'Load options from a JSON config file')
+  .option('-V, --version',                              'Output the current version')
+  .option('-v, --verbose',                              'Verbose output');
+/* eslint-enable no-multi-spaces, max-len */
 
 program.parse(process.argv);
 
-let options: UserOptions = { ...program.opts() };
+const cliOptions = program.opts();
 
-if (options.config) {
+const { env } = process;
+const envOptions = {
+  aria2Server: env['ta.aria2-server'],
+  aria2Key: env['ta.aria2-key'],
+  botKey: env['ta.bot-key'],
+  userId: env['ta.user-id'],
+  proxy: env.https_proxy,
+  maxIndex: env['ta.max-index'],
+};
+
+let configFileOptions;
+
+if (cliOptions.config) {
   // Load from config file.
-  const configFileOptions = JSON.parse(fs.readFileSync(options.config, 'utf-8'));
+  const configFile = JSON.parse(fs.readFileSync(cliOptions.config, 'utf-8'));
 
-  options = { ...options, ...configFileOptions };
+  configFileOptions = {
+    aria2Server: configFile['aria2-server'],
+    aria2Key: configFile['aria2-key'],
+    botKey: configFile['bot-key'],
+    userId: configFile['user-id'],
+    proxy: configFile.proxy,
+    maxIndex: configFile['max-index'],
+  };
 }
 
+// Combine options - https://stackoverflow.com/a/44034059
+const options:UserOptions = mergeWith(
+  {}, configFileOptions, envOptions, cliOptions,
+  // https://github.com/airbnb/javascript/issues/752
+  (a, b) => (b === null ? a : undefined),
+);
+
 options.maxIndex = options.maxIndex ? Number(options.maxIndex) : 20;
-options.tgUser = Number(options.tgUser);
+options.userId = Number(options.userId);
 
 const logger = winston.createLogger({
   level: options.verbose ? 'verbose' : 'info',
@@ -56,7 +84,7 @@ const logger = winston.createLogger({
 logger.verbose('Received options', options);
 
 // Validate final options.
-const requiredOptions: RequiredOption[] = ['aria2Server', 'tgBot', 'tgUser'];
+const requiredOptions: RequiredOption[] = ['aria2Server', 'botKey', 'userId'];
 const validateErrors: string[] = [];
 
 requiredOptions.forEach((requiredKey) => {
@@ -79,8 +107,8 @@ const aria2Server = new Aria2({
 
 new Telegram({
   aria2Server,
-  tgBot: options.tgBot as string,
-  tgUser: options.tgUser,
+  botKey: options.botKey as string,
+  userId: options.userId,
   proxy: options.proxy,
   maxIndex: options.maxIndex,
   logger,

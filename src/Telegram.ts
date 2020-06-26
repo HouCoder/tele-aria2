@@ -22,14 +22,14 @@ export default class Telegram {
   private agent: HttpsProxyAgent | undefined;
 
   constructor(options: {
-    tgBot: string;
-    tgUser: number;
+    botKey: string;
+    userId: number;
     proxy: string | undefined;
     aria2Server: Aria2;
     maxIndex: number;
     logger: winston.Logger;
   }) {
-    this.allowedUser = options.tgUser;
+    this.allowedUser = options.userId;
     this.aria2Server = options.aria2Server;
     this.maxIndex = options.maxIndex;
     this.logger = options.logger;
@@ -39,7 +39,7 @@ export default class Telegram {
     }
 
     this.bot = this.connect2Tg({
-      tgBot: options.tgBot,
+      botKey: options.botKey,
     });
 
     this.registerAria2ServerEvents();
@@ -50,7 +50,7 @@ export default class Telegram {
   }
 
   private connect2Tg(tgSettings: {
-    tgBot: string;
+    botKey: string;
   }): Telegraf<Context> {
     let additionalOptions = {};
 
@@ -63,7 +63,7 @@ export default class Telegram {
       };
     }
 
-    return new Telegraf(tgSettings.tgBot, additionalOptions);
+    return new Telegraf(tgSettings.botKey, additionalOptions);
   }
 
   private authentication(): void {

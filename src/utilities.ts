@@ -37,7 +37,7 @@ export function getFilename(task: any): string {
       // Actual BT download - data structure https://jsonformatter.org/7901b2
       return task.bittorrent.info.name;
     }
-    // Just bittorrent file, data structure example https://jsonformatter.org/json-pretty-print/9ac1f8
+    // Just bittorrent file - data structure example https://jsonformatter.org/json-pretty-print/9ac1f8
     return task.files[0].path;
   }
   // HTTP protocol, get filename from download path, https://stackoverflow.com/a/58708800/4480674
