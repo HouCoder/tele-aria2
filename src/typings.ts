@@ -55,12 +55,12 @@ export interface GeneralCallbacks {
 }
 
 export interface UserOptions {
-  aria2Server?: string;
-  aria2Key?: string;
-  botKey?: string;
-  userId?: number;
-  proxy?: string;
-  maxIndex?: number;
+  aria2Server: string;
+  aria2Key: string;
+  botKey: string;
+  userId: string;
+  proxy: string;
+  maxIndex: number;
   config?: string;
   verbose?: boolean;
 }

@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { program } from 'commander';
 import winston from 'winston';
-import { mergeWith } from 'lodash';
+import { mergeWith, isString } from 'lodash';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
@@ -19,7 +19,7 @@ program
   .option('-s, --aria2-server <aria2 server endpoint>', 'Aria2 server endpoint, e.g. ws://192.168.1.119:6800/jsonrpc')
   .option('-k, --aria2-key    <aria2 rpc key>',         'Aria2 server secret key')
   .option('-b, --bot-key      <telegram bot key>',      'Telegram bot key')
-  .option('-u, --user-id      <telegram user id>',      'Telegram user ID, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
+  .option('-u, --user-id      <telegram user id>',      'Telegram user ID, use `,` to separate multiple ids, see here to get your ID - https://stackoverflow.com/a/32777943/4480674')
   .option('-p, --proxy        <proxy>',                 'Access Telegram server through a HTTP proxy')
   .option('-m, --max-index    <maximum index>',         'Max items in the range of [1, max-index], default 20')
   .option('-c, --config       <config file path>',      'Load options from a JSON config file')
@@ -64,8 +64,13 @@ const options:UserOptions = mergeWith(
   (a, b) => (b === null ? a : undefined),
 );
 
+let userId:number[] = [];
+
+if (isString(options.userId) && options.userId.includes(',')) {
+  userId = options.userId.split(',').map(Number);
+}
+
 options.maxIndex = options.maxIndex ? Number(options.maxIndex) : 20;
-options.userId = Number(options.userId);
 
 const logger = winston.createLogger({
   level: options.verbose ? 'verbose' : 'info',
@@ -108,7 +113,7 @@ const aria2Server = new Aria2({
 new Telegram({
   aria2Server,
   botKey: options.botKey as string,
-  userId: options.userId,
+  userId,
   proxy: options.proxy,
   maxIndex: options.maxIndex,
   logger,

@@ -45,10 +45,12 @@ Option Priorities also follow this order, so cli has the highest priority.
   "aria2-key": "xxx",
   "proxy": "http://127.0.0.1:7890",
   "bot-key": "123456789:xxx",
-  "user-id": 123456,
+  "user-id": "123456",
   "max-index": 10
 }
 ```
+
+Need to add more users? no problem, just add `user-id` like this: `"user-id": "123,456,789"`.
 
 ## Usage
 
