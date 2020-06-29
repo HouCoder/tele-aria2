@@ -42,8 +42,8 @@ export default class Aria2 {
     this.connection.on('message', (message: string) => {
       this.onWsMessage(message);
     });
-    this.connection.on('error', this.onWsError);
-    this.connection.on('close', this.onWsClose);
+    this.connection.on('error', this.onWsError.bind(this));
+    this.connection.on('close', this.onWsClose.bind(this));
   }
 
   private onWsOpen(): void {
