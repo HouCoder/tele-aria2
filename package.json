@@ -15,7 +15,7 @@
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "rm -rf dist && tsc",
+    "compile": "rm -rf dist && tsc && cp package.json dist && rm -rf dist/test",
     "fix": "gts fix",
     "prepare": "npm run compile"
   },
