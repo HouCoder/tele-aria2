@@ -16,8 +16,7 @@
     "check": "gts check",
     "clean": "gts clean",
     "compile": "rm -rf dist && tsc && cp package.json dist && rm -rf dist/test",
-    "fix": "gts fix",
-    "prepare": "npm run compile"
+    "fix": "gts fix"
   },
   "keywords": [
     "Aria2",
