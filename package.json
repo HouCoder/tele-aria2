@@ -9,7 +9,8 @@
     "tele-aria2": "./dist/src/run.js"
   },
   "files": [
-    "dist/**/*.*"
+    "dist",
+    "dist/src"
   ],
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
