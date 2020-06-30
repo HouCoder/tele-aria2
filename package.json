@@ -1,6 +1,6 @@
 {
   "name": "tele-aria2",
-  "version": "0.2.0-beta.2",
+  "version": "0.2.0-beta.3",
   "description": "Control your Aria2 server through Telegram",
   "homepage": "https://github.com/HouCoder/tele-aria2",
   "main": "./dist/src/run.js",
