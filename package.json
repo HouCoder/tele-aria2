@@ -2,14 +2,14 @@
   "name": "tele-aria2",
   "version": "0.2.0-beta.2",
   "description": "Control your Aria2 server through Telegram",
-  "homepage": "https://github.com/HouCoder/tele-aria2#tele-aria2",
+  "homepage": "https://github.com/HouCoder/tele-aria2",
   "main": "./dist/src/run.js",
   "types": "./dist/src/typings.d.ts",
   "bin": {
     "tele-aria2": "./dist/src/run.js"
   },
   "files": [
-    "dist"
+    "dist/**/*"
   ],
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
