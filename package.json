@@ -9,14 +9,15 @@
     "tele-aria2": "./dist/src/run.js"
   },
   "files": [
-    "dist/src"
+    "dist"
   ],
   "scripts": {
     "test": "mocha -r ts-node/register test/**/*.spec.ts",
     "check": "gts check",
     "clean": "gts clean",
-    "compile": "rm -rf dist && tsc && cp package.json dist && rm -rf dist/test",
-    "fix": "gts fix"
+    "compile": "rm -rf dist && tsc && mv dist/src/* dist && rm -rf dist/test dist/src",
+    "fix": "gts fix",
+    "prepare": "npm run compile"
   },
   "keywords": [
     "Aria2",
