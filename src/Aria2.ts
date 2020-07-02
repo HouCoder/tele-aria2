@@ -83,11 +83,11 @@ export default class Aria2 {
   }
 
   private onWsError(error: Error): void {
-    this.logger.warn(error.message);
+    this.logger.error(error.message);
   }
 
   private onWsClose(): void {
-    this.logger.info('Websocket connection closed');
+    this.logger.error('Websocket connection closed');
   }
 
   on(event: Aria2EventTypes, callback: Aria2EventCallback): Aria2 {

@@ -72,6 +72,10 @@ No worries, just send your torrent file to chat!
 
 <img src="https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/tele-aria2.bt.png" alt="start" width="400px">
 
+## Docker
+
+`$ docker run --init -it -v ~/.tel-aria2.json:/tele-aria2/config.json --net=host tele-aria2:latest`
+
 ## TODO
 
 - [ ] Docker image
