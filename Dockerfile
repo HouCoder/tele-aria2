@@ -2,7 +2,7 @@ FROM node:12-alpine
 
 WORKDIR /tele-aria2
 
-RUN npm install tele-aria2@0.2.0-beta.13 -g
+RUN npm install tele-aria2 -g
 
 VOLUME /tele-aria2
 
