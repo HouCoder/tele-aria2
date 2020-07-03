@@ -78,7 +78,7 @@ Run this bot as a Docker container, multi-architecture supported:
 
 ```
 $ docker run -it \
-  -v ~/.tel-aria2.json:/tele-aria2/config.json \
+  -v ~/.tele-aria2.json:/tele-aria2/config.json \
   --net=host \
   houcoder/tele-aria2
 ```
