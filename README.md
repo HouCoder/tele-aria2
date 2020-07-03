@@ -17,7 +17,7 @@ The newly rewritten project has a few advantages over [the old one](https://gith
 
 1. Create your own bot and get its access token by using [@BotFather](https://telegram.me/botfather).
 1. Get your unique user ID - https://stackoverflow.com/a/32777943/4480674.
-1. (Optional) For mainland China users, be sure to have a **HTTP** proxy up and running.
+1. (Optional) Telegram blocked in your region/country? be sure to have a **HTTP** proxy up and running.
 1. `$ npm install tele-aria2 -g`.
 1. `$ tele-aria2 --help` to see how to get started.
 
@@ -29,7 +29,7 @@ You can pass parameters to tele-aria2 in 3 ways:
 2. environment variable
 3. configuration file
 
-Option Priorities also follow this order, so cli has the highest priority.
+Option priorities also follow this order, so cli has the highest priority.
 
 |                             	| Aria2 server    	| Aria2 key    	| Telegram bot key 	| Telegram user id 	| Proxy       	| Max items in range(default 20) 	|
 |-----------------------------	|-----------------	|--------------	|------------------	|------------------	|-------------	|--------------------------------	|
@@ -74,13 +74,16 @@ No worries, just send your torrent file to chat!
 
 ## Docker
 
-`$ docker run --init -it -v ~/.tel-aria2.json:/tele-aria2/config.json --net=host tele-aria2:latest`
+Run this bot as a Docker container, multi-architecture supported:
 
-## TODO
+```
+$ docker run -it \
+  -v ~/.tel-aria2.json:/tele-aria2/config.json \
+  --net=host \
+  houcoder/tele-aria2
+```
 
-- [ ] Docker image
-- [ ] Unit testing
-- [ ] Auto release to npm
+Keep in mind, the `--net=host` option is required if you have `proxy` set in your config file.
 
 [deps]: https://img.shields.io/david/HouCoder/tele-aria2.svg
 [deps-url]: https://david-dm.org/HouCoder/tele-aria2

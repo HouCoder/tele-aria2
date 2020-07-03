@@ -89,12 +89,17 @@ const logger = winston.createLogger({
 logger.verbose('Received options', options);
 
 // Validate final options.
+const optionMapping = {
+  aria2Server: 'aria2-server',
+  botKey: 'bot-key',
+  userId: 'user-id',
+};
 const requiredOptions: RequiredOption[] = ['aria2Server', 'botKey', 'userId'];
 const validateErrors: string[] = [];
 
 requiredOptions.forEach((requiredKey) => {
   if (!options[requiredKey]) {
-    validateErrors.push(`${requiredKey} option is required!`);
+    validateErrors.push(`${optionMapping[requiredKey]} option is required!`);
   }
 });
 
