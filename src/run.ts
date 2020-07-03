@@ -5,6 +5,7 @@ import path from 'path';
 import { program } from 'commander';
 import winston from 'winston';
 import { mergeWith, isString } from 'lodash';
+import colors from 'colors/safe';
 
 import Aria2 from './Aria2';
 import Telegram from './Telegram';
@@ -104,6 +105,13 @@ requiredOptions.forEach((requiredKey) => {
 });
 
 if (validateErrors.length) {
+  const notificationMessage = [
+    '⚠️ 0.2.0 has changed configuration format,',
+    'be sure to update your configurations if you are migrating from 0.1.0,',
+    'visit https://github.com/HouCoder/tele-aria2 for more details',
+  ].join(' ');
+
+  console.log(colors.red(notificationMessage));
   validateErrors.forEach((validateError) => logger.error(validateError));
 
   process.exit(1);
