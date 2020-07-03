@@ -3,6 +3,7 @@
 ![Logo](https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/logo.png)
 
 [![NPM Version][npm-image]][npm-url]
+[![Docker Image Size][docker-size]][docker-url]
 [![GitHub Actions][github-image]][github-url]
 [![TypeScript Style Guide][gts-image]][gts-url]
 [![deps][deps]][deps-url]
@@ -93,3 +94,5 @@ Keep in mind, the `--net=host` option is required if you have `proxy` set in you
 [github-url]: https://github.com/HouCoder/tele-aria2/actions
 [gts-image]: https://img.shields.io/badge/code%20style-google-blueviolet.svg
 [gts-url]: https://github.com/google/gts
+[docker-size]: https://shields.beevelop.com/docker/image/image-size/houcoder/tele-aria2/latest.svg
+[docker-url]: https://hub.docker.com/r/houcoder/tele-aria2
