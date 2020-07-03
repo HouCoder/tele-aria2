@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { program } from 'commander';
 import winston from 'winston';
-import { mergeWith, isString } from 'lodash';
+import { mergeWith } from 'lodash';
 import colors from 'colors/safe';
 
 import Aria2 from './Aria2';
@@ -65,11 +65,7 @@ const options:UserOptions = mergeWith(
   (a, b) => (b === null ? a : undefined),
 );
 
-let userId:number[] = [];
-
-if (isString(options.userId) && options.userId.includes(',')) {
-  userId = options.userId.split(',').map(Number);
-}
+const userId = options.userId.split(',').map(Number);
 
 options.maxIndex = options.maxIndex ? Number(options.maxIndex) : 20;
 
@@ -122,6 +118,8 @@ const aria2Server = new Aria2({
   token: options.aria2Key,
   logger,
 });
+
+console.log(userId);
 
 new Telegram({
   aria2Server,
