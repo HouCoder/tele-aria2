@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import WebSocket from 'ws';
+import ReconnectingWebSocket, { ErrorEvent } from 'reconnecting-websocket';
 import winston from 'winston';
 import {
   Aria2EventCallback, GeneralCallback, RequestParams,
@@ -7,7 +8,7 @@ import {
 } from './typings';
 
 export default class Aria2 {
-  private connection: WebSocket;
+  private connection: ReconnectingWebSocket;
 
   private token: string | undefined;
 
@@ -19,12 +20,18 @@ export default class Aria2 {
 
   private callbackQueue: GeneralCallbacks = {};
 
+  private maxRetries = 20;
+
   constructor(settings: {
     endpoint: string;
     token: string | undefined;
     logger: winston.Logger;
   }) {
-    this.connection = new WebSocket(settings.endpoint);
+    this.connection = new ReconnectingWebSocket(settings.endpoint, [], {
+      WebSocket,
+      connectionTimeout: 1000,
+      maxRetries: this.maxRetries,
+    });
 
     this.logger = settings.logger;
 
@@ -36,14 +43,14 @@ export default class Aria2 {
   }
 
   private regirsterWsEvents(): void {
-    this.connection.on('open', () => {
+    this.connection.addEventListener('open', () => {
       this.onWsOpen();
     });
-    this.connection.on('message', (message: string) => {
+    this.connection.addEventListener('message', (message: string) => {
       this.onWsMessage(message);
     });
-    this.connection.on('error', this.onWsError.bind(this));
-    this.connection.on('close', this.onWsClose.bind(this));
+    this.connection.addEventListener('error', this.onWsError.bind(this));
+    this.connection.addEventListener('close', this.onWsClose.bind(this));
   }
 
   private onWsOpen(): void {
@@ -82,8 +89,15 @@ export default class Aria2 {
     }
   }
 
-  private onWsError(error: Error): void {
-    this.logger.error(error.message);
+  private onWsError(error: ErrorEvent): void {
+    if (this.connection.retryCount === this.maxRetries) {
+      const message = `Unable to connect to ${this.connection.url} after ${this.maxRetries} retries, exiting...`;
+
+      this.logger.error(message);
+      process.exit(1);
+    }
+
+    this.logger.error(error);
   }
 
   private onWsClose(): void {

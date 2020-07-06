@@ -119,8 +119,6 @@ const aria2Server = new Aria2({
   logger,
 });
 
-console.log(userId);
-
 new Telegram({
   aria2Server,
   botKey: options.botKey as string,
