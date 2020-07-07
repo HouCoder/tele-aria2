@@ -9,7 +9,8 @@
     "noImplicitReturns": false,
     "esModuleInterop": true,
     "declaration": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["dom"],
   },
   "include": [
     "src/**/*.ts",

@@ -46,7 +46,7 @@ export default class Aria2 {
     this.connection.addEventListener('open', () => {
       this.onWsOpen();
     });
-    this.connection.addEventListener('message', (message: string) => {
+    this.connection.addEventListener('message', (message: MessageEvent) => {
       this.onWsMessage(message);
     });
     this.connection.addEventListener('error', this.onWsError.bind(this));
@@ -65,8 +65,8 @@ export default class Aria2 {
     }
   }
 
-  private onWsMessage(message: string): void {
-    const parsedMessage = JSON.parse(message);
+  private onWsMessage(message: MessageEvent): void {
+    const parsedMessage = JSON.parse(message.data);
 
     this.logger.info('Received message from Aria2 server');
     this.logger.verbose('Received message', parsedMessage);
@@ -97,7 +97,7 @@ export default class Aria2 {
       process.exit(1);
     }
 
-    this.logger.error(error);
+    this.logger.error(error.message);
   }
 
   private onWsClose(): void {
