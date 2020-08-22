@@ -114,7 +114,7 @@ export default class Telegram {
     this.replyOnAria2ServerEvent('downloadPause', 'Download paused!');
     // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
     this.replyOnAria2ServerEvent('downloadError',
-      'A download error occured. ✅ Finished/Stopped menu for more details',
+      '- a download error occured. ✅ Finished/Stopped menu for more details',
     );
     this.replyOnAria2ServerEvent('downloadStop', 'Download stopped!'); // Calling aria2.remove can triger this event.
   }
