@@ -114,7 +114,7 @@ export default class Telegram {
     this.replyOnAria2ServerEvent('downloadPause', 'Download paused!');
     // Try to download some non-existing URL to triger this error. e.g. https://1992342346.xyz/qwq122312
     this.replyOnAria2ServerEvent('downloadError',
-      'Download error occured, please use the ✅Finished/Stopped menu to see the detail',
+      'A download error occured. ✅ Finished/Stopped menu for more details',
     );
     this.replyOnAria2ServerEvent('downloadStop', 'Download stopped!'); // Calling aria2.remove can triger this event.
   }
@@ -263,7 +263,7 @@ export default class Telegram {
 
       if (gid) {
         if (method === 'pause') {
-          ctx.reply('Pausing a task can take a quite while, will notice you once it\'s done.');
+          ctx.reply('Pausing a task can take a while, you will be notified once it\'s done.');
         }
 
         this.aria2Server.send(method, [gid]);
@@ -281,22 +281,22 @@ export default class Telegram {
         this.logger.info(`Received message from Telegram: ${inComingText}`);
 
         switch (inComingText) {
-          case '⬇️Downloading':
+          case '⬇️ Downloading':
             this.downloading(ctx);
             break;
-          case '⌛️Waiting':
+          case '⌛️ Waiting':
             this.waiting(ctx);
             break;
-          case '✅Finished/Stopped':
+          case '✅ Finished/Stopped':
             this.stopped(ctx);
             break;
-          case '⏸️Pause a task':
+          case '⏸️ Pause task':
             this.pause(ctx);
             break;
-          case '▶️Resume a task':
+          case '▶️ Resume task':
             this.resume(ctx);
             break;
-          case '❌Remove a task':
+          case '❌ Remove task':
             this.remove(ctx);
             break;
           default:
@@ -371,8 +371,8 @@ export default class Telegram {
       ctx.replyWithMarkdown(
         'Please select an option',
         Markup.keyboard([
-          '⬇️Downloading', '⌛️Waiting', '✅Finished/Stopped',
-          '⏸️Pause a task', '▶️Resume a task', '❌Remove a task',
+          '⬇️ Downloading', '⌛️ Waiting', '✅ Finished/Stopped',
+          '⏸️ Pause task', '▶️ Resume task', '❌ Remove task',
         ], { columns: 3 }).extra(),
       );
     });
