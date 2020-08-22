@@ -169,7 +169,7 @@ export default class Telegram {
           return messageEntities.join('\n');
         });
 
-        const message = parsed.join('\n\n') || 'No finished/stopped download!';
+        const message = parsed.join('\n\n') || 'No finished or stopped downloads!';
 
         ctx.reply(message);
       }
@@ -263,7 +263,7 @@ export default class Telegram {
 
       if (gid) {
         if (method === 'pause') {
-          ctx.reply('Pausing a task can take a while, you will be notified once it\'s done.');
+          ctx.reply('Pausing the task... you will be notified once it\'s done.');
         }
 
         this.aria2Server.send(method, [gid]);
