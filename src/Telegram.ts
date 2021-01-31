@@ -1,5 +1,5 @@
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import Telegraf, { Markup, Context } from 'telegraf';
+import { Telegraf, Markup, Context } from 'telegraf';
 import needle, { NeedleResponse } from 'needle';
 import winston from 'winston';
 import Aria2 from './Aria2';
@@ -71,9 +71,9 @@ export default class Telegram {
       let incomingUserId;
 
       if (ctx.updateType === 'callback_query') {
-        incomingUserId = ctx.update.callback_query?.from?.id;
+        incomingUserId = ctx.callbackQuery?.from?.id;
       } else if (ctx.updateType === 'message') {
-        incomingUserId = ctx.update.message?.from?.id;
+        incomingUserId = ctx.message?.from?.id;
       }
 
       if (incomingUserId && this.allowedUser.includes(incomingUserId) && next) {
@@ -187,13 +187,13 @@ export default class Telegram {
         ctx.reply('No active task.');
       } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => Markup.callbackButton(
+        const buttons = data.map((item: TaskItem) => Markup.button.callback(
           getFilename(item), `pause-task.${item.gid}`),
         );
 
         ctx.replyWithMarkdown(
           'Which one to pause?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
+          Markup.inlineKeyboard(buttons, { columns: 1 }),
         );
       }
     });
@@ -210,13 +210,13 @@ export default class Telegram {
         ctx.reply('No waiting task.');
       } else {
         // Build callback buttons.
-        const buttons = data.map((item: TaskItem) => Markup.callbackButton(
+        const buttons = data.map((item: TaskItem) => Markup.button.callback(
           getFilename(item), `resume-task.${item.gid}`),
         );
 
         ctx.replyWithMarkdown(
           'Which one to resume?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
+          Markup.inlineKeyboard(buttons, { columns: 1 }),
         );
       }
     });
@@ -243,12 +243,12 @@ export default class Telegram {
 
         // Build callback buttons.
         const buttons = fullList.map(
-          (item: TaskItem) => Markup.callbackButton(getFilename(item), `remove-task.${item.gid}`),
+          (item: TaskItem) => Markup.button.callback(getFilename(item), `remove-task.${item.gid}`),
         );
 
         return ctx.replyWithMarkdown(
           'Which one to remove?',
-          Markup.inlineKeyboard(buttons, { columns: 1 }).extra(),
+          Markup.inlineKeyboard(buttons, { columns: 1 }),
         );
       });
     });
@@ -308,7 +308,7 @@ export default class Telegram {
         }
       }
 
-      const document = ctx.update.message?.document;
+      const document = ctx.message?.document;
 
       // Receive BT file
       if (document && document.file_name && isDownloadable(document.file_name)) {
@@ -364,7 +364,7 @@ export default class Telegram {
         Markup.inlineKeyboard([
           Markup.urlButton('️GitHub Page', 'https://github.com/HouCoder/tele-aria2'),
           Markup.urlButton('Contact Author ', 'https://t.me/TonniHou'),
-        ], { columns: 2 }).extra(),
+        ], { columns: 2 }),
       );
 
       // Keyboard
@@ -373,7 +373,7 @@ export default class Telegram {
         Markup.keyboard([
           '⬇️ Downloading', '⌛️ Waiting', '✅ Finished/Stopped',
           '⏸️ Pause task', '▶️ Resume task', '❌ Remove task',
-        ], { columns: 3 }).extra(),
+        ], { columns: 3 }),
       );
     });
   }
