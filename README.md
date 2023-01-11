@@ -1,5 +1,7 @@
 # tele-aria2
 
+⚠️ I don't have time to maintain this project, please find other alternatives
+
 ![Logo](https://raw.githubusercontent.com/HouCoder/tele-aria2/HEAD/images/logo.png)
 
 [![NPM Version][npm-image]][npm-url]
